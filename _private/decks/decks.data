@@ -1,0 +1,37 @@
+[deck_07-01-2024-17-25]
+
+name="Ironclad Starter"
+cards=[ {
+"id": "strike",
+"source": "main"
+}, {
+"id": "strike",
+"source": "main"
+}, {
+"id": "strike",
+"source": "main"
+}, {
+"id": "strike",
+"source": "main"
+}, {
+"id": "strike",
+"source": "main"
+}, {
+"id": "defend",
+"source": "main"
+}, {
+"id": "defend",
+"source": "main"
+}, {
+"id": "defend",
+"source": "main"
+}, {
+"id": "defend",
+"source": "main"
+}, {
+"id": "defend",
+"source": "main"
+}, {
+"id": "bash",
+"source": "main"
+} ]

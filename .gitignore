@@ -1,0 +1,5 @@
+.import/**
+*.import
+addons/godot-plugin-refresher/**
+*.nro
+commit.txt

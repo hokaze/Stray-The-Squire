@@ -1,0 +1,285 @@
+[meta]
+
+id="main"
+name="Main Database"
+
+[cards]
+
+strike={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage",
+"name": "Strike"
+},
+"values": {
+"damage": 6,
+"mana": 1
+}
+}
+strike_upgrade={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage",
+"name": "Strike+"
+},
+"values": {
+"damage": 9,
+"mana": 1
+}
+}
+defend={
+"categories": {
+"class": "skill",
+"colour": "red",
+"rarity": "common",
+"target": "player"
+},
+"texts": {
+"desc": "Block [block] Damage",
+"name": "Defend"
+},
+"values": {
+"block": 5,
+"mana": 1
+}
+}
+defend_upgrade={
+"categories": {
+"class": "skill",
+"colour": "red",
+"rarity": "common",
+"target": "player"
+},
+"texts": {
+"desc": "Block [block] Damage",
+"name": "Defend+"
+},
+"values": {
+"block": 8,
+"mana": 1
+}
+}
+bash={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage
+Inflict [vulnerable] Vulnerable",
+"name": "Bash"
+},
+"values": {
+"damage": 8,
+"mana": 2,
+"vulnerable": 2
+}
+}
+bash_upgrade={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage
+Inflict [vulnerable] Vulnerable",
+"name": "Bash+"
+},
+"values": {
+"damage": 10,
+"mana": 2,
+"vulnerable": 3
+}
+}
+iron_wave={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage
+Gain [block] Block",
+"name": "Iron Wave"
+},
+"values": {
+"block": 5,
+"damage": 5,
+"mana": 1
+}
+}
+iron_wave_upgrade={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage
+Gain [block] Block",
+"name": "Iron Wave+"
+},
+"values": {
+"block": 7,
+"damage": 7,
+"mana": 1
+}
+}
+uppercut={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "uncommon",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage
+Inflict [weak] Weak
+Inflict [vulnerable] Vulnerable",
+"name": "Uppercut"
+},
+"values": {
+"damage": 13,
+"mana": 2,
+"vulnerable": 1,
+"weak": 1
+}
+}
+uppercut_upgrade={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "uncommon",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage
+Inflict [weak] Weak
+Inflict [vulnerable] Vulnerable",
+"name": "Uppercut+"
+},
+"values": {
+"damage": 13,
+"mana": 2,
+"vulnerable": 2,
+"weak": 2
+}
+}
+shockwave={
+"categories": {
+"class": "skill",
+"colour": "red",
+"rarity": "uncommon",
+"target": "all_enemy"
+},
+"texts": {
+"desc": "Inflict [weak] Weak and [vulnerable] Vulnerable to all enemies.
+Exhaust.",
+"name": "Shockwave"
+},
+"values": {
+"exhaust": 1,
+"mana": 2,
+"vulnerable": 3,
+"weak": 3
+}
+}
+shockwave_upgrade={
+"categories": {
+"class": "skill",
+"colour": "red",
+"rarity": "uncommon",
+"target": "all_enemy"
+},
+"texts": {
+"desc": "Inflict [weak] Weak and [vulnerable] Vulnerable to all enemies.
+Exhaust.",
+"name": "Shockwave+"
+},
+"values": {
+"exhaust": 1,
+"mana": 2,
+"vulnerable": 5,
+"weak": 5
+}
+}
+bludgeon={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "rare",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage",
+"name": "Bludgeon"
+},
+"values": {
+"damage": 32,
+"mana": 3
+}
+}
+bludgeon_upgrade={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "rare",
+"target": "enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage",
+"name": "Bludgeon+"
+},
+"values": {
+"damage": 42,
+"mana": 3
+}
+}
+cleave={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "all_enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage to All Enemies",
+"name": "Cleave"
+},
+"values": {
+"damage": 8,
+"mana": 1
+}
+}
+cleave_upgrade={
+"categories": {
+"class": "attack",
+"colour": "red",
+"rarity": "common",
+"target": "all_enemy"
+},
+"texts": {
+"desc": "Deal [damage] Damage to All Enemies",
+"name": "Cleave+"
+},
+"values": {
+"damage": 11,
+"mana": 1
+}
+}

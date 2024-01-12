@@ -1,0 +1,214 @@
+[meta]
+
+id="home"
+name="Home Display Animation"
+
+[idle]
+
+pos=[ {
+"editable_transi": false,
+"editable_val": false,
+"val": {
+"mode": "initial",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 0, 0 ),
+"vec_val": Vector2( 0, 0 )
+}
+}, {
+"editable_transi": true,
+"editable_val": true,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 1.0,
+"duration_range_min": 0.5,
+"easing": "out",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "random",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 5, 5 ),
+"vec_val": Vector2( -5, -5 )
+}
+}, {
+"editable_transi": true,
+"editable_val": true,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 1.0,
+"duration_range_min": 0.5,
+"easing": "in_out",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "random",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 5, 5 ),
+"vec_val": Vector2( -5, -5 )
+}
+}, {
+"editable_transi": true,
+"editable_val": true,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 1.0,
+"duration_range_min": 0.5,
+"easing": "in_out",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "random",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 5, 5 ),
+"vec_val": Vector2( -5, -5 )
+}
+}, {
+"editable_transi": true,
+"editable_val": true,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 1.0,
+"duration_range_min": 0.5,
+"easing": "in_out",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "random",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 5, 5 ),
+"vec_val": Vector2( -5, -5 )
+}
+}, {
+"editable_transi": true,
+"editable_val": false,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 1.0,
+"duration_range_min": 0.5,
+"easing": "in",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "initial",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 0, 0 ),
+"vec_val": Vector2( 0, 0 )
+}
+} ]
+scale=[  ]
+rot=[ {
+"editable_transi": false,
+"editable_val": false,
+"val": {
+"mode": "initial",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 0, 0 ),
+"vec_val": Vector2( 0, 0 )
+}
+}, {
+"editable_transi": true,
+"editable_val": true,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 2.0,
+"duration_range_min": 1.0,
+"easing": "out",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "random",
+"num_range": 5.0,
+"num_val": -5.0,
+"vec_range": Vector2( 0, 0 ),
+"vec_val": Vector2( 0, 0 )
+}
+}, {
+"editable_transi": true,
+"editable_val": true,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 2.0,
+"duration_range_min": 1.0,
+"easing": "in_out",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "random",
+"num_range": 5.0,
+"num_val": -5.0,
+"vec_range": Vector2( 0, 0 ),
+"vec_val": Vector2( 0, 0 )
+}
+}, {
+"editable_transi": true,
+"editable_val": false,
+"transi": {
+"duration": 0.3,
+"duration_range_max": 2.0,
+"duration_range_min": 1.0,
+"easing": "in",
+"flip_card": false,
+"interactive": true,
+"random_duration": true,
+"type": "quad"
+},
+"val": {
+"mode": "initial",
+"num_range": 0.0,
+"num_val": 0.0,
+"vec_range": Vector2( 0, 0 ),
+"vec_val": Vector2( 0, 0 )
+}
+} ]
+
+[focused]
+
+pos=[  ]
+scale=[  ]
+rot=[  ]
+
+[activated]
+
+pos=[  ]
+scale=[  ]
+rot=[  ]
+
+[deactivated]
+
+pos=[  ]
+scale=[  ]
+rot=[  ]
+
+[unfocused]
+
+pos=[  ]
+scale=[  ]
+rot=[  ]
