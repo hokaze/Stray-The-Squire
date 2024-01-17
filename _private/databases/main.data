@@ -18,7 +18,7 @@ strike={
 },
 "values": {
 "damage": 6,
-"mana": 1
+"energy": 1
 }
 }
 strike_upgrade={
@@ -34,7 +34,7 @@ strike_upgrade={
 },
 "values": {
 "damage": 9,
-"mana": 1
+"energy": 1
 }
 }
 defend={
@@ -50,7 +50,7 @@ defend={
 },
 "values": {
 "block": 5,
-"mana": 1
+"energy": 1
 }
 }
 defend_upgrade={
@@ -66,7 +66,7 @@ defend_upgrade={
 },
 "values": {
 "block": 8,
-"mana": 1
+"energy": 1
 }
 }
 bash={
@@ -83,7 +83,7 @@ Inflict [vulnerable] Vulnerable",
 },
 "values": {
 "damage": 8,
-"mana": 2,
+"energy": 2,
 "vulnerable": 2
 }
 }
@@ -101,7 +101,7 @@ Inflict [vulnerable] Vulnerable",
 },
 "values": {
 "damage": 10,
-"mana": 2,
+"energy": 2,
 "vulnerable": 3
 }
 }
@@ -120,7 +120,7 @@ Gain [block] Block",
 "values": {
 "block": 5,
 "damage": 5,
-"mana": 1
+"energy": 1
 }
 }
 iron_wave_upgrade={
@@ -138,7 +138,7 @@ Gain [block] Block",
 "values": {
 "block": 7,
 "damage": 7,
-"mana": 1
+"energy": 1
 }
 }
 uppercut={
@@ -156,7 +156,7 @@ Inflict [vulnerable] Vulnerable",
 },
 "values": {
 "damage": 13,
-"mana": 2,
+"energy": 2,
 "vulnerable": 1,
 "weak": 1
 }
@@ -176,7 +176,7 @@ Inflict [vulnerable] Vulnerable",
 },
 "values": {
 "damage": 13,
-"mana": 2,
+"energy": 2,
 "vulnerable": 2,
 "weak": 2
 }
@@ -195,7 +195,7 @@ Exhaust.",
 },
 "values": {
 "exhaust": 1,
-"mana": 2,
+"energy": 2,
 "vulnerable": 3,
 "weak": 3
 }
@@ -214,7 +214,7 @@ Exhaust.",
 },
 "values": {
 "exhaust": 1,
-"mana": 2,
+"energy": 2,
 "vulnerable": 5,
 "weak": 5
 }
@@ -232,7 +232,7 @@ bludgeon={
 },
 "values": {
 "damage": 32,
-"mana": 3
+"energy": 3
 }
 }
 bludgeon_upgrade={
@@ -248,7 +248,7 @@ bludgeon_upgrade={
 },
 "values": {
 "damage": 42,
-"mana": 3
+"energy": 3
 }
 }
 cleave={
@@ -264,7 +264,7 @@ cleave={
 },
 "values": {
 "damage": 8,
-"mana": 1
+"energy": 1
 }
 }
 cleave_upgrade={
@@ -280,6 +280,6 @@ cleave_upgrade={
 },
 "values": {
 "damage": 11,
-"mana": 1
+"energy": 1
 }
 }

@@ -18,7 +18,7 @@ onready var _comp_val = $TitleBg/TitleLayout/ValuesLayout/ComparisionLayout/Comp
 onready var _texts = $TitleBg/TitleLayout/TextsLayout/Texts
 onready var _contains = $TitleBg/TitleLayout/TextsLayout/Contains
 onready var _rarity_sort = $TitleBg/TitleLayout/SortLayout/RaritySort
-onready var _mana_sort = $TitleBg/TitleLayout/SortLayout/ManaSort
+onready var _energy_sort = $TitleBg/TitleLayout/SortLayout/EnergySort
 onready var _name_sort = $TitleBg/TitleLayout/SortLayout/NameSort
 onready var _deck_list = $BuilderLayout/DeckBg/CardDrop/DeckLayout/DeckScroll/DeckList
 onready var _store_select = $BuilderLayout/DeckBg/CardDrop/DeckLayout/StoreOrDeck/StoreSelect
@@ -78,8 +78,8 @@ func _apply_filters() -> void:
 	if _rarity_sort.pressed:
 		sorting["category:rarity"] = ["common", "uncommon", "rare", "mythic_rare"]
 
-	if _mana_sort.pressed:
-		sorting["value:mana"] = true
+	if _energy_sort.pressed:
+		sorting["value:energy"] = true
 
 	if _name_sort.pressed:
 		sorting["text:name"] = true
@@ -171,9 +171,9 @@ func _update_deck_list() -> void:
 
 		layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-		var mana = card.data().get_value("mana")
-		if mana >= 0:
-			btn.text = "%s (%d)" % [card.data().get_text("name"), mana]
+		var energy = card.data().get_value("energy")
+		if energy >= 0:
+			btn.text = "%s (%d)" % [card.data().get_text("name"), energy]
 		else:
 			btn.text = "%s (X)" % card.data().get_text("name")
 
@@ -287,7 +287,7 @@ func _on_RaritySort_toggled(_button_pressed: bool) -> void:
 	_apply_filters()
 
 
-func _on_ManaSort_toggled(_button_pressed: bool) -> void:
+func _on_energySort_toggled(_button_pressed: bool) -> void:
 	_apply_filters()
 
 

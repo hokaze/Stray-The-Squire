@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://addons/cardengine/card/abstract_card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://cards/normal/normal_card.gd" type="Script" id=2]

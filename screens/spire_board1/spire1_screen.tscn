@@ -23,7 +23,7 @@ size = 34
 font_data = ExtResource( 4 )
 
 [sub_resource type="DynamicFont" id=1]
-size = 25
+size = 34
 font_data = ExtResource( 4 )
 
 [node name="GameScreen" type="Control"]
@@ -83,7 +83,7 @@ __meta__ = {
 margin_top = 39.0
 margin_right = 80.0
 margin_bottom = 59.0
-focus_neighbour_left = NodePath("../../../ManaBar/EndTurnBtn")
+focus_neighbour_left = NodePath("../../../ActionBar/EndTurnBtn")
 focus_neighbour_top = NodePath("../../../MenuBtn")
 text = "View"
 
@@ -97,31 +97,6 @@ margin_top = -240.0
 margin_right = -440.0
 margin_bottom = -200.0
 color = Color( 0.607843, 0.917647, 0.521569, 1 )
-
-[node name="VBox" type="VBoxContainer" parent="DeckZone"]
-margin_right = 80.0
-margin_bottom = 60.0
-
-[node name="DrawCount" type="Label" parent="DeckZone/VBox"]
-margin_right = 80.0
-margin_bottom = 26.0
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
-custom_constants/shadow_offset_x = 2
-custom_constants/shadow_offset_y = 2
-custom_fonts/font = SubResource( 1 )
-text = "0"
-align = 1
-valign = 1
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="ViewDeckBtn" type="Button" parent="DeckZone/VBox"]
-margin_top = 30.0
-margin_right = 80.0
-margin_bottom = 50.0
-focus_neighbour_right = NodePath("../../../ManaBar/EndTurnBtn")
-text = "View"
 
 [node name="Title" type="Label" parent="DeckZone"]
 margin_top = -40.0
@@ -137,7 +112,32 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="ManaBar" type="HBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="DeckZone"]
+margin_right = 80.0
+margin_bottom = 60.0
+
+[node name="DrawCount" type="Label" parent="DeckZone/VBox"]
+margin_right = 80.0
+margin_bottom = 35.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+custom_fonts/font = SubResource( 1 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="ViewDeckBtn" type="Button" parent="DeckZone/VBox"]
+margin_top = 39.0
+margin_right = 80.0
+margin_bottom = 59.0
+focus_neighbour_right = NodePath("../../../ActionBar/EndTurnBtn")
+text = "View"
+
+[node name="ActionBar" type="HBoxContainer" parent="."]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -149,7 +149,7 @@ margin_bottom = -175.0
 custom_constants/separation = 20
 alignment = 1
 
-[node name="Title" type="Label" parent="ManaBar"]
+[node name="Title" type="Label" parent="ActionBar"]
 margin_left = 224.0
 margin_right = 343.0
 margin_bottom = 55.0
@@ -165,7 +165,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="Amount" type="Label" parent="ManaBar"]
+[node name="Amount" type="Label" parent="ActionBar"]
 margin_left = 363.0
 margin_right = 380.0
 margin_bottom = 55.0
@@ -181,7 +181,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="EndTurnBtn" parent="ManaBar" instance=ExtResource( 2 )]
+[node name="EndTurnBtn" parent="ActionBar" instance=ExtResource( 2 )]
 margin_left = 400.0
 margin_right = 575.0
 rect_min_size = Vector2( 175, 55 )
@@ -416,7 +416,7 @@ autostart = true
 
 [connection signal="pressed" from="DiscardZone/VBox/ViewDiscardBtn" to="." method="_on_ViewDiscardBtn_pressed"]
 [connection signal="pressed" from="DeckZone/VBox/ViewDeckBtn" to="." method="_on_ViewDeckBtn_pressed"]
-[connection signal="pressed" from="ManaBar/EndTurnBtn" to="." method="_on_EndTurnBtn_pressed"]
+[connection signal="pressed" from="ActionBar/EndTurnBtn" to="." method="_on_EndTurnBtn_pressed"]
 [connection signal="dropped" from="DropArea" to="." method="_on_DropArea_dropped"]
 [connection signal="mouse_entered" from="HandZone" to="." method="_on_HandZone_mouse_entered"]
 [connection signal="pressed" from="MenuBtn" to="." method="_on_MenuBtn_pressed"]

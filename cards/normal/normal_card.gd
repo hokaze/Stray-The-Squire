@@ -34,16 +34,16 @@ func _update_data(data: CardData, default: CardData = null) -> void:
 			desc_text = desc_text.replace("[weak]", "%d" % data.get_value("weak"))
 		_desc.text = desc_text
 
-	if data.has_value("mana"):
-		var val = data.get_value("mana")
+	if data.has_value("energy"):
+		var val = data.get_value("energy")
 		if val >= 0:
 			_cost.text = "%d" % val
 		else:
 			_cost.text = "X"
 
 	if default != null:
-		var val = data.get_value("mana")
-		var orig = default.get_value("mana")
+		var val = data.get_value("energy")
+		var orig = default.get_value("energy")
 
 		if val > orig:
 			_cost.add_color_override("font_color", Color("ff0000"))

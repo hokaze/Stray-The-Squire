@@ -1,6 +1,6 @@
 [effects]
 
 count=3
-mana_double="Double the Mana"
-mana_incr="Mana +1"
-mana_decr="Mana -1"
+energy_double="Double the Energy on Common cards"
+energy_incr="Energy +1"
+energy_decr="Energy -1"

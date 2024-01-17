@@ -2,23 +2,23 @@ extends AbstractScreen
 
 const STARTING_HAND_SIZE: int = 5
 const MAX_HAND_SIZE: int = 10
-const MAX_MANA: int = 3
+const MAX_ENERGY: int = 3
 
 var _hand: CardHand = CardHand.new()
 var _draw_pile: CardPile = CardPile.new()
 var _discard_pile: CardPile = CardPile.new()
 var _library_pile: CardPile = CardPile.new()
-var _mana: int = MAX_MANA
+var _energy: int = MAX_ENERGY
 
 onready var _hand_cont = $HandZone/HandContainer
-onready var _end_turn = $ManaBar/EndTurnBtn
+onready var _end_turn = $ActionBar/EndTurnBtn
 onready var _draw_count = $DeckZone/VBox/DrawCount
 onready var _discard_count = $DiscardZone/VBox/DiscardCount
 onready var _hand_delay = $StartingHandDelay
 onready var _drop_area = $DropArea
 onready var _cards_visual = $HandZone/HandContainer/DropArea/Cards
 
-onready var _mana_label = $ManaBar/Amount
+onready var _energy_label = $ActionBar/Amount
 onready var _player_hp_label = $PlayerStats/HP/Amount
 onready var _player_block_label = $PlayerStats/Block/Amount
 
@@ -86,7 +86,7 @@ func _ready() -> void:
 		
 
 func _update_stats() -> void:
-	_mana_label.text = str(_mana)
+	_energy_label.text = str(_energy)
 	_player_hp_label.text = str(_player.hp)
 	_player_block_label.text = str(_player.block)
 	
@@ -187,26 +187,26 @@ func _on_EndTurnBtn_pressed() -> void:
 	# reset player block
 	_player.block = 0
 	
-	# refresh mana/energy
-	_mana = MAX_MANA
+	# refresh energy/energy
+	_energy = MAX_ENERGY
 	_update_stats()
 
 
 func _play_card(card: CardInstance, target: Enemy=null) -> void:
-	var card_mana = card.data().get_value("mana") if card.data().has_value("mana") else 0
+	var card_energy = card.data().get_value("energy") if card.data().has_value("energy") else 0
 	var card_target = card.data().get_category("target") if card.data().has_meta_category("target") else ""
 	var card_damage = card.data().get_value("damage") if card.data().has_value("damage") else 0
 	var card_block = card.data().get_value("block") if card.data().has_value("block") else 0
 	var card_weak = card.data().get_value("weak") if card.data().has_value("weak") else 0
 	var card_vuln = card.data().get_value("vulnerable") if card.data().has_value("vulnerable") else 0
 	
-	if _mana >= card_mana:
+	if _energy >= card_energy:
 		_hand.play_card(card.ref(), _discard_pile)
 
-		if card_mana < 0:
-			_mana = 0
+		if card_energy < 0:
+			_energy = 0
 		else:
-			_mana -= card_mana
+			_energy -= card_energy
 		
 		# TODO: better handling of "all" enemies for dynamic scenes with non-fixed no of enemies
 		if card_target == "all_enemy":
