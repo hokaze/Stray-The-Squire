@@ -23,7 +23,7 @@ use_filter = true
 font_data = ExtResource( 15 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 30
+size = 34
 use_filter = true
 font_data = ExtResource( 15 )
 
@@ -35,7 +35,7 @@ use_filter = true
 font_data = ExtResource( 15 )
 
 [sub_resource type="DynamicFont" id=1]
-size = 34
+size = 38
 outline_size = 3
 outline_color = Color( 0, 0, 0, 1 )
 use_filter = true

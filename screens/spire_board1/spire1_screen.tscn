@@ -1,12 +1,13 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://screens/spire_board1/spire1_screen.gd" type="Script" id=1]
 [ext_resource path="res://widgets/small_button/small_button.tscn" type="PackedScene" id=2]
 [ext_resource path="res://containers/hand/hand.tscn" type="PackedScene" id=3]
 [ext_resource path="res://fonts/TerminusTTF-4.39.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://combat/player.tscn" type="PackedScene" id=5]
 [ext_resource path="res://containers/card_list/card_list.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/cardengine/core/drop_area.gd" type="Script" id=7]
-[ext_resource path="res://enemy/enemy.tscn" type="PackedScene" id=8]
+[ext_resource path="res://combat/enemy.tscn" type="PackedScene" id=8]
 
 [sub_resource type="Gradient" id=4]
 colors = PoolColorArray( 0.196078, 0.27451, 0.572549, 1, 0, 0.724915, 0.867188, 1 )
@@ -24,6 +25,11 @@ font_data = ExtResource( 4 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 34
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 100
+extra_spacing_char = 20
 font_data = ExtResource( 4 )
 
 [node name="GameScreen" type="Control"]
@@ -192,98 +198,9 @@ __meta__ = {
 }
 button_text = "END TURN"
 
-[node name="PlayerStats" type="VBoxContainer" parent="."]
-margin_left = 110.0
-margin_top = 160.0
-margin_right = 150.0
-margin_bottom = 200.0
-
-[node name="Title" type="Label" parent="PlayerStats"]
-margin_right = 140.0
-margin_bottom = 35.0
-size_flags_vertical = 3
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
-custom_constants/shadow_offset_x = 2
-custom_constants/shadow_offset_y = 2
-custom_fonts/font = SubResource( 2 )
-text = "Player"
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false,
-"_editor_description_": ""
-}
-
-[node name="HP" type="HBoxContainer" parent="PlayerStats"]
-margin_top = 39.0
-margin_right = 140.0
-margin_bottom = 74.0
-
-[node name="Title" type="Label" parent="PlayerStats/HP"]
-margin_right = 102.0
-margin_bottom = 35.0
-size_flags_vertical = 3
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
-custom_constants/shadow_offset_x = 2
-custom_constants/shadow_offset_y = 2
-custom_fonts/font = SubResource( 2 )
-text = "HP:   "
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false,
-"_editor_description_": ""
-}
-
-[node name="Amount" type="Label" parent="PlayerStats/HP"]
-margin_left = 106.0
-margin_right = 140.0
-margin_bottom = 35.0
-size_flags_vertical = 3
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
-custom_constants/shadow_offset_x = 2
-custom_constants/shadow_offset_y = 2
-custom_fonts/font = SubResource( 2 )
-text = "70"
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false,
-"_editor_description_": ""
-}
-
-[node name="Block" type="HBoxContainer" parent="PlayerStats"]
-margin_top = 78.0
-margin_right = 140.0
-margin_bottom = 113.0
-
-[node name="Title" type="Label" parent="PlayerStats/Block"]
-margin_right = 119.0
-margin_bottom = 35.0
-size_flags_vertical = 3
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
-custom_constants/shadow_offset_x = 2
-custom_constants/shadow_offset_y = 2
-custom_fonts/font = SubResource( 2 )
-text = "Block: "
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false,
-"_editor_description_": ""
-}
-
-[node name="Amount" type="Label" parent="PlayerStats/Block"]
-margin_left = 123.0
-margin_right = 140.0
-margin_bottom = 35.0
-size_flags_vertical = 3
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
-custom_constants/shadow_offset_x = 2
-custom_constants/shadow_offset_y = 2
-custom_fonts/font = SubResource( 2 )
-text = "0"
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false,
-"_editor_description_": ""
-}
+[node name="Player" parent="." instance=ExtResource( 5 )]
+position = Vector2( 50, 90 )
+scale = Vector2( 0.5, 0.5 )
 
 [node name="DropArea" type="Control" parent="."]
 margin_left = -12.0
@@ -384,20 +301,6 @@ size_flags_vertical = 3
 in_anchor = NodePath("../../InAnchor")
 out_anchor = NodePath("../../OutAnchor")
 
-[node name="InAnchor" type="Control" parent="LibNode2D/LibraryBG"]
-anchor_top = 0.5
-anchor_bottom = 0.5
-rect_rotation = 90.0
-rect_scale = Vector2( 1e-05, 1e-05 )
-
-[node name="OutAnchor" type="Control" parent="LibNode2D/LibraryBG"]
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-rect_rotation = 90.0
-rect_scale = Vector2( 1e-05, 1e-05 )
-
 [node name="Close" type="Button" parent="LibNode2D/LibraryBG"]
 margin_left = 1190.0
 margin_right = 1250.0
@@ -407,6 +310,51 @@ focus_neighbour_top = NodePath("../LibraryScroll")
 focus_neighbour_right = NodePath("../LibraryScroll")
 focus_neighbour_bottom = NodePath("../LibraryScroll")
 text = "X"
+
+[node name="InAnchor" type="Control" parent="LibNode2D/LibraryBG"]
+anchor_left = 0.5
+anchor_right = 0.5
+rect_rotation = 90.0
+rect_scale = Vector2( 1e-05, 1e-05 )
+
+[node name="OutAnchor" type="Control" parent="LibNode2D/LibraryBG"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+rect_rotation = 90.0
+rect_scale = Vector2( 1e-05, 1e-05 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeadNode2D" type="Node2D" parent="."]
+visible = false
+z_index = 2
+
+[node name="DeadBG" type="ColorRect" parent="DeadNode2D"]
+margin_left = 15.0
+margin_top = 10.0
+margin_right = 1265.0
+margin_bottom = 710.0
+rect_min_size = Vector2( 0, 60 )
+size_flags_horizontal = 3
+color = Color( 0, 0, 0, 0.862745 )
+
+[node name="Label1" type="Label" parent="DeadNode2D/DeadBG"]
+margin_right = 1250.0
+margin_bottom = 700.0
+size_flags_vertical = 3
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+custom_fonts/font = SubResource( 6 )
+text = "PERISHED"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="StartingHandDelay" type="Timer" parent="."]
 process_mode = 0

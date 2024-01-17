@@ -1,7 +1,11 @@
-class_name Enemy
+class_name Player
 extends Node2D
 
 #onready var _sprite = $Sprite
+onready var _animation_player = $AnimationPlayer
+#onready var _animation_block_label = $Blocked
+onready var _animation_damage_label = $Damage
+
 onready var _hp_bar = $HPBar
 onready var _hp_label = $HPBar/HBox/HP
 onready var _max_hp_label = $HPBar/HBox/MaxHP
@@ -9,34 +13,23 @@ onready var _block_icon = $BlockIcon
 onready var _block_label = $BlockIcon/Block
 onready var _drop = $Drop
 onready var _dead = $Dead
-onready var _intent_damage_label = $Intent/Damage
-onready var _intent_block_label = $Intent/Block
 onready var _weak_icon = $Status/WeakIcon
 onready var _weak_label = $Status/Weak
 onready var _vuln_icon = $Status/VulnerableIcon
 onready var _vuln_label = $Status/Vulnerable
 
-onready var _hp = 50
-onready var _max_hp = 100
+onready var _hp = 70
+onready var _max_hp = 70
 onready var _block = 0
-
-onready var _intent_base_damage = 4
-onready var _intent_base_block = 6
-onready var _intent_damage = 4
-onready var _intent_block = 6
 
 onready var _weak = 0
 onready var _vuln = 0
 
-# set enemy stats - TODO: eventually pull from data store, add flag for image?
+# set player stats - TODO: eventually pull from data store, add flag for image?
 func init(data: Dictionary) -> void:
 	_hp = data.hp
 	_max_hp = data.hp
 	_block = data.block
-	_intent_base_damage = data.intent.damage
-	_intent_base_block = data.intent.block
-	_intent_damage = data.intent.damage
-	_intent_block = data.intent.block
 	
 	# make sure hp bar reflects the hp instead of using default 50/100
 	update_display()
@@ -47,8 +40,6 @@ func update_display() -> void:
 	_hp_bar.value = _hp
 	_max_hp_label.text = str(_max_hp)
 	_hp_label.text = str(_hp)
-	_intent_damage_label.text = str(_intent_damage)
-	_intent_block_label.text = str(_intent_block)
 		
 	if (_block > 0):
 		_block_icon.visible = true
@@ -62,13 +53,11 @@ func update_display() -> void:
 	if (_weak > 0):
 		_weak_icon.visible = true
 		_weak_label.visible = true
-		_intent_damage_label.add_color_override("font_color", Color("ff9999"))
-		_intent_damage = int(_intent_base_damage * 0.75)
+		# TODO: apply effect to weaken player
 	else:
 		_weak_icon.visible = false
 		_weak_label.visible = false
-		_intent_damage_label.remove_color_override("font_color")
-		_intent_damage = _intent_base_damage
+		# TODO: remove effect to weaken player
 	_weak_label.text = str(_weak)
 	
 	if (_vuln > 0):
@@ -81,38 +70,37 @@ func update_display() -> void:
 
 
 func damage(damage: int) -> void:
-	print("DEBUG: enemy.damage(), dealing " + str(damage) + " before statuses")
+	#print("DEBUG: player.damage(), dealing " + str(damage) + " before statuses")
 	
 	# handle vulnerable condition, incoming damage x1.5, rounded
 	if _vuln > 0:
 		damage = int(damage * 1.5)
 	
-	print("DEBUG: enemy.damage(), dealing " + str(damage) + " after statuses")
+	#print("DEBUG: player.damage(), dealing " + str(damage) + " after statuses")
 	var post_block_damage = damage
 	if (_block > 0):
 		post_block_damage -= _block
 		_block -= damage
-		#print("DEBUG: enemy.damage(), BLOCK DAMAGED")
+		#print("DEBUG: player.damage(), BLOCK DAMAGED")
 	if (_block < 0):
-		#print("DEBUG: enemy.damage(), BLOCK BROKEN")
+		#print("DEBUG: player.damage(), BLOCK BROKEN")
 		_block = 0
+		
+	# if pierced block or no block, inflict damage + play animation
 	if (post_block_damage > 0):
-		#print("DEBUG: enemy.damage(), HP DAMAGED")
+		#print("DEBUG: player.damage(), HP DAMAGED")
 		_hp -= post_block_damage
+		_animation_damage_label.text = str(post_block_damage)
+		_animation_player.play("Damaged")
+	else:
+		_animation_player.play("Blocked")
 
-	# if hp < 1, enemy is defeated, cross them out and don't let them act, disable their drop area
+	# if hp < 1, player is defeated - TODO: actual defeat state / game over screen?
 	if  _hp < 1:
 		_dead.visible = true
 		_drop.visible = false
 	
-	#print("DEBUG: enemy.damage(), post-attack enemy has " + str(_hp) + " hp and " + str(_block) + " block")	
-
-
-func play_card(damage: int, weak: int, vuln: int) -> void:
-	# always apply damage BEFORE condition, to avoid vulnerable attack self-proc
-	damage(damage)
-	_weak += weak
-	_vuln += vuln
+	#print("DEBUG: player.damage(), post-attack player has " + str(_hp) + " hp and " + str(_block) + " block")	
 	update_display()
 
 

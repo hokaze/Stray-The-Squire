@@ -239,16 +239,16 @@ in_anchor = NodePath("../../InAnchor")
 out_anchor = NodePath("../../OutAnchor")
 
 [node name="InAnchor" type="Control" parent="BuilderLayout/LibraryBg"]
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_left = 0.5
+anchor_right = 0.5
 rect_rotation = 90.0
 rect_scale = Vector2( 1e-05, 1e-05 )
 
 [node name="OutAnchor" type="Control" parent="BuilderLayout/LibraryBg"]
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
 rect_rotation = 90.0
 rect_scale = Vector2( 1e-05, 1e-05 )
 __meta__ = {
@@ -337,7 +337,7 @@ size_flags_vertical = 3
 [connection signal="item_selected" from="TitleBg/TitleLayout/TextsLayout/Texts" to="." method="_on_Texts_item_selected"]
 [connection signal="text_changed" from="TitleBg/TitleLayout/TextsLayout/Contains" to="." method="_on_Contains_text_changed"]
 [connection signal="toggled" from="TitleBg/TitleLayout/SortLayout/RaritySort" to="." method="_on_RaritySort_toggled"]
-[connection signal="toggled" from="TitleBg/TitleLayout/SortLayout/EnergySort" to="." method="_on_ManaSort_toggled"]
+[connection signal="toggled" from="TitleBg/TitleLayout/SortLayout/EnergySort" to="." method="_on_EnergySort_toggled"]
 [connection signal="toggled" from="TitleBg/TitleLayout/SortLayout/NameSort" to="." method="_on_NameSort_toggled"]
 [connection signal="pressed" from="TitleBg/TitleLayout/BackBtn" to="." method="_on_BackBtn_pressed"]
 [connection signal="resized" from="BuilderLayout/LibraryBg/LibraryScroll" to="." method="_on_LibraryScroll_resized"]

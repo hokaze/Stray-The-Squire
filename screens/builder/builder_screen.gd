@@ -287,7 +287,7 @@ func _on_RaritySort_toggled(_button_pressed: bool) -> void:
 	_apply_filters()
 
 
-func _on_energySort_toggled(_button_pressed: bool) -> void:
+func _on_EnergySort_toggled(_button_pressed: bool) -> void:
 	_apply_filters()
 
 
@@ -359,4 +359,4 @@ func _on_StoreSelect_item_selected(index: int) -> void:
 	elif index == 1:
 		_store_mode = "usr"
 	_update_deck_select()
-		
+

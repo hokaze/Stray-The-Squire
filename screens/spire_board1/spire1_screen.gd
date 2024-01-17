@@ -17,20 +17,20 @@ onready var _discard_count = $DiscardZone/VBox/DiscardCount
 onready var _hand_delay = $StartingHandDelay
 onready var _drop_area = $DropArea
 onready var _cards_visual = $HandZone/HandContainer/DropArea/Cards
-
 onready var _energy_label = $ActionBar/Amount
-onready var _player_hp_label = $PlayerStats/HP/Amount
-onready var _player_block_label = $PlayerStats/Block/Amount
 
 # view deck/discard/exhaust piles with a scrollable grid view
 onready var _library = $LibNode2D
 onready var _lib_scroll = $LibNode2D/LibraryBG/LibraryScroll
 onready var _lib_cont = $LibNode2D/LibraryBG/LibraryScroll/LibraryContainer
 
-var _player = {"hp": 70, "block": 0}
+onready var _dead = $DeadNode2D
+
+var _player_stats = {"hp": 70, "block": 0}
 var _e1_stats = {"hp": 22, "block": 0, "intent": {"damage": 6, "block": 0} }
 var _e2_stats = {"hp": 10, "block": 6, "intent": {"damage": 4, "block": 6} }
 
+onready var _player = $Player
 onready var _enemy1 = $Enemy1
 onready var _enemy1_drop = $Enemy1/Drop
 onready var _enemy2 = $Enemy2
@@ -45,6 +45,9 @@ func _ready() -> void:
 	_discard_pile.connect("changed", self, "_on_DiscardPile_changed")
 	# warning-ignore:return_value_discarded
 	_hand.connect("changed", self, "_on_Hand_changed")
+	
+	# set params for player - TODO: move DropArea to player scene while keeping large size?
+	_player.init(_player_stats)
 	
 	# set params for enemies and connect enemy drop area to handler for playing cards
 	_enemy1.init(_e1_stats)
@@ -87,11 +90,13 @@ func _ready() -> void:
 
 func _update_stats() -> void:
 	_energy_label.text = str(_energy)
-	_player_hp_label.text = str(_player.hp)
-	_player_block_label.text = str(_player.block)
-	
+	_player.update_display()
 	_enemy1.update_display()
 	_enemy2.update_display()
+	
+	# show placeholder screen for player death, then load main menu
+	if _player._hp < 1:
+		_show_dead()
 
 
 func _on_MenuBtn_pressed() -> void:
@@ -143,53 +148,44 @@ func _on_StartingHandDelay_timeout() -> void:
 #	_discard_pile.move_cards(_draw_pile)
 #	_draw_pile.shuffle()
 
-
-func _damage_player(damage: int) -> void:
-	var post_block_damage = damage
-	#print("DEBUG: incoming damage = " + str(damage) + ", block = " + str(target.block))
-	if (_player.block > 0):
-		post_block_damage -= _player.block
-		_player.block -= damage
-	if (_player.block < 0):
-		_player.block = 0
-	if (post_block_damage > 0):
-		_player.hp -= post_block_damage
-	#print("DEBUG: post block damage = " + str(post_block_damage) + ", block = " + str(target.block))
-
-
 func _on_EndTurnBtn_pressed() -> void:
+	# disable end button until logic is done, to avoid being able to spam it to skip enemy turns
+	_end_turn.disabled = true
+	
 	# discard
 	_hand.move_cards(_discard_pile)
 	
 	# TODO: enemy turn, to split off into own method/class later
 	# just doing an example with the 2 demo enemies with static intent
-	# clear their block, attack, re-apply block
+	# clear their block, attack, re-apply block, tick down buffs/debuffs
 	if _enemy1._hp > 0:
-		_enemy1._block = 0
-		_damage_player(_enemy1._intent_damage)
-		_enemy1._block = _enemy1._intent_block
-	if _enemy2._hp > 0:
-		_enemy2._block = 0
-		_damage_player(_enemy2._intent_damage)
-		_enemy2._block = _enemy2._intent_block
-		
-	# end of enemy turn, tick down their debuff statuses
-	if _enemy1._weak > 0: _enemy1._weak -= 1
-	if _enemy1._vuln > 0: _enemy1._vuln -= 1
-	if _enemy2._weak > 0: _enemy2._weak -= 1
-	if _enemy2._vuln > 0: _enemy2._vuln -= 1
-	_enemy1.update_display()
-	_enemy2.update_display()
+		_enemy1.attack(_player)
+		yield(get_tree().create_timer(1.5), "timeout")
+		if _enemy1._weak > 0: _enemy1._weak -= 1
+		if _enemy1._vuln > 0: _enemy1._vuln -= 1
+		_enemy1.update_display()
 	
-	# draw up to starting hand size
-	_hand_delay.start(0.1)
+	if _enemy2._hp > 0:
+		_enemy2.attack(_player)
+		yield(get_tree().create_timer(1.5), "timeout")
+		if _enemy2._weak > 0: _enemy2._weak -= 1
+		if _enemy2._vuln > 0: _enemy2._vuln -= 1
+		_enemy2.update_display()
+		
+	# draw up to starting hand size, unless dead
+	if _player._hp > 0:
+		_hand_delay.start(0.1)
 	
 	# reset player block
-	_player.block = 0
+	_player._block = 0
 	
 	# refresh energy/energy
 	_energy = MAX_ENERGY
 	_update_stats()
+	
+	# re-enable end turn button
+	yield(get_tree().create_timer(2.5), "timeout")
+	_end_turn.disabled = false
 
 
 func _play_card(card: CardInstance, target: Enemy=null) -> void:
@@ -210,26 +206,30 @@ func _play_card(card: CardInstance, target: Enemy=null) -> void:
 		
 		# TODO: better handling of "all" enemies for dynamic scenes with non-fixed no of enemies
 		if card_target == "all_enemy":
+			_player._animation_player.play("Player_Attack")
+			yield(get_tree().create_timer(0.6), "timeout")
 			_enemy1.play_card(card_damage, card_weak, card_vuln)
 			_enemy2.play_card(card_damage, card_weak, card_vuln)
 		elif card_target == "enemy" && target != null:
+			_player._animation_player.play("Player_Attack")
+			yield(get_tree().create_timer(0.6), "timeout")
 			target.play_card(card_damage, card_weak, card_vuln)
 		
 		if card_block:
-			_player.block += card_block
+			_player._block += card_block
 		
 		_update_stats()
 
 func _on_DropArea_dropped(card: CardInstance, _source: String, _on_card: CardInstance) -> void:
-	print("DEBUG: drop area player/all dropped!")
+	#print("DEBUG: drop area player/all dropped!")
 	_play_card(card)
 
 func _on_Enemy1Drop_dropped(card: CardInstance, _source: String, _on_card: CardInstance) -> void:
-	print("DEBUG: card played on enemy_1 drop area")
+	#print("DEBUG: card played on enemy_1 drop area")
 	_play_card(card, _enemy1)
 
 func _on_Enemy2Drop_dropped(card: CardInstance, _source: String, _on_card: CardInstance) -> void:
-	print("DEBUG: card played on enemy_2 drop area")
+	#print("DEBUG: card played on enemy_2 drop area")
 	_play_card(card, _enemy2)
 
 # view deck/discard/exhaust piles with a scrollable grid view
@@ -285,3 +285,10 @@ func _on_HandZone_mouse_entered():
 		if visual._is_focused:
 			#visual._on_MouseArea_mouse_exited()
 			_end_turn.grab_focus()
+
+# quick placeholder splash screen for player death + auto reset to main menu after a few moments
+# TODO: better handling for player death, disable controls in background, let player select main menu
+func _show_dead():
+	_dead.visible = true
+	yield(get_tree().create_timer(2), "timeout")
+	emit_signal("next_screen", "menu")

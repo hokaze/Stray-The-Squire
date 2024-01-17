@@ -1,0 +1,273 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://combat/hp_bar_back.png" type="Texture" id=1]
+[ext_resource path="res://combat/enemy_placeholder.png" type="Texture" id=2]
+[ext_resource path="res://combat/hp_bar_progress.png" type="Texture" id=3]
+[ext_resource path="res://fonts/TerminusTTF-4.39.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://combat/hp_bar_block.png" type="Texture" id=5]
+[ext_resource path="res://combat/enemy.gd" type="Script" id=6]
+[ext_resource path="res://addons/cardengine/core/drop_area.gd" type="Script" id=7]
+[ext_resource path="res://combat/intent_damage.png" type="Texture" id=8]
+[ext_resource path="res://combat/debuff_weak.png" type="Texture" id=9]
+[ext_resource path="res://combat/debuff_vulnerable.png" type="Texture" id=10]
+[ext_resource path="res://combat/animations/Enemy_Attack.tres" type="Animation" id=11]
+[ext_resource path="res://combat/animations/Blocked.tres" type="Animation" id=12]
+[ext_resource path="res://combat/animations/Damaged.tres" type="Animation" id=13]
+
+[sub_resource type="DynamicFont" id=4]
+size = 80
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+use_filter = true
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 34
+use_filter = true
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 800
+outline_size = 4
+use_filter = true
+font_data = ExtResource( 4 )
+
+[node name="Enemy" type="Node2D"]
+script = ExtResource( 6 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Blocked = ExtResource( 12 )
+anims/Damaged = ExtResource( 13 )
+anims/Enemy_Attack = ExtResource( 11 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 220, 270 )
+texture = ExtResource( 2 )
+
+[node name="Blocked" type="Label" parent="."]
+visible = false
+anchor_right = 0.284
+margin_left = 70.0
+margin_top = 300.0
+margin_right = 390.0
+margin_bottom = 390.0
+size_flags_vertical = 3
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+custom_fonts/font = SubResource( 4 )
+text = "Blocked!"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Damage" type="Label" parent="."]
+visible = false
+margin_left = 70.0
+margin_top = 300.0
+margin_right = 390.0
+margin_bottom = 390.0
+size_flags_vertical = 3
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
+custom_fonts/font = SubResource( 4 )
+text = "-10"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="HPBar" type="TextureProgress" parent="."]
+margin_left = 20.0
+margin_top = 513.0
+margin_right = 420.0
+margin_bottom = 563.0
+value = 50.0
+texture_under = ExtResource( 1 )
+texture_progress = ExtResource( 3 )
+
+[node name="HBox" type="HBoxContainer" parent="HPBar"]
+margin_right = 400.0
+margin_bottom = 50.0
+grow_horizontal = 0
+grow_vertical = 0
+alignment = 1
+
+[node name="HP" type="Label" parent="HPBar/HBox"]
+margin_left = 136.0
+margin_top = 4.0
+margin_right = 176.0
+margin_bottom = 45.0
+custom_fonts/font = SubResource( 1 )
+text = "50"
+align = 1
+
+[node name="Divider" type="Label" parent="HPBar/HBox"]
+margin_left = 180.0
+margin_top = 4.0
+margin_right = 200.0
+margin_bottom = 45.0
+custom_fonts/font = SubResource( 1 )
+text = "/"
+align = 1
+
+[node name="MaxHP" type="Label" parent="HPBar/HBox"]
+margin_left = 204.0
+margin_top = 4.0
+margin_right = 264.0
+margin_bottom = 45.0
+custom_fonts/font = SubResource( 1 )
+text = "100"
+align = 1
+
+[node name="BlockIcon" type="Sprite" parent="."]
+visible = false
+position = Vector2( 35, 540 )
+texture = ExtResource( 5 )
+
+[node name="Block" type="Label" parent="BlockIcon"]
+margin_left = -27.0
+margin_top = -23.0
+margin_right = 19.0
+margin_bottom = 18.0
+custom_fonts/font = SubResource( 2 )
+text = "0"
+align = 1
+valign = 1
+
+[node name="Dead" type="Label" parent="."]
+visible = false
+margin_left = 10.0
+margin_top = -88.0
+margin_right = 410.0
+margin_bottom = 602.0
+size_flags_vertical = 3
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 4
+custom_constants/shadow_offset_y = 4
+custom_fonts/font = SubResource( 3 )
+text = "X"
+align = 1
+valign = 1
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Intent" type="HBoxContainer" parent="."]
+margin_left = 20.0
+margin_right = 420.0
+margin_bottom = 35.0
+custom_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="Intent"]
+margin_left = 68.0
+margin_right = 187.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "Intent:"
+align = 1
+valign = 1
+
+[node name="DamageIcon" type="TextureRect" parent="Intent"]
+margin_left = 197.0
+margin_right = 232.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 35, 35 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 8 )
+expand = true
+
+[node name="Damage" type="Label" parent="Intent"]
+margin_left = 242.0
+margin_right = 259.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "4"
+align = 1
+valign = 1
+
+[node name="BlockIcon" type="TextureRect" parent="Intent"]
+margin_left = 269.0
+margin_right = 304.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 35, 35 )
+texture = ExtResource( 5 )
+expand = true
+
+[node name="Block" type="Label" parent="Intent"]
+margin_left = 314.0
+margin_right = 331.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "6"
+align = 1
+valign = 1
+
+[node name="Status" type="HBoxContainer" parent="."]
+margin_left = 20.0
+margin_top = 570.0
+margin_right = 420.0
+margin_bottom = 605.0
+custom_constants/separation = 10
+alignment = 1
+
+[node name="Label" type="Label" parent="Status"]
+margin_left = 68.0
+margin_right = 187.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "Status:"
+align = 1
+valign = 1
+
+[node name="WeakIcon" type="TextureRect" parent="Status"]
+margin_left = 197.0
+margin_right = 232.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 35, 35 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 9 )
+expand = true
+
+[node name="Weak" type="Label" parent="Status"]
+margin_left = 242.0
+margin_right = 259.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "0"
+align = 1
+valign = 1
+
+[node name="VulnerableIcon" type="TextureRect" parent="Status"]
+margin_left = 269.0
+margin_right = 304.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 35, 35 )
+texture = ExtResource( 10 )
+expand = true
+
+[node name="Vulnerable" type="Label" parent="Status"]
+margin_left = 314.0
+margin_right = 331.0
+margin_bottom = 35.0
+custom_fonts/font = SubResource( 2 )
+text = "0"
+align = 1
+valign = 1
+
+[node name="Drop" type="Control" parent="."]
+margin_left = -50.0
+margin_top = -50.0
+margin_right = 490.0
+margin_bottom = 650.0
+script = ExtResource( 7 )
