@@ -6,7 +6,7 @@
 
 Aiming for a Nintendo Switch homebrew release primarily, with Windows, Linux and Web also available as options.
 
-No binaries until I have something worth showing, but you can view the current state of things via the web demo: https://hokaze.github.io/Stray-The-Squire/index.html
+No binaries until I have something worth showing, but you can view the current state of things via the web demo: https://hokaze.github.io/Stray-The-Squire/release/web/index.html
 
 Powered by BraindeadBZH's CardEngine: https://github.com/BraindeadBZH/godot_card_engine
 
