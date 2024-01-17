@@ -194,8 +194,8 @@ Exhaust.",
 "name": "Shockwave"
 },
 "values": {
-"exhaust": 1,
 "energy": 2,
+"exhaust": 1,
 "vulnerable": 3,
 "weak": 3
 }
@@ -213,8 +213,8 @@ Exhaust.",
 "name": "Shockwave+"
 },
 "values": {
-"exhaust": 1,
 "energy": 2,
+"exhaust": 1,
 "vulnerable": 5,
 "weak": 5
 }
@@ -281,5 +281,41 @@ cleave_upgrade={
 "values": {
 "damage": 11,
 "energy": 1
+}
+}
+seeing_red={
+"categories": {
+"class": "skill",
+"colour": "red",
+"rarity": "uncommon",
+"target": "player"
+},
+"texts": {
+"desc": "Gain [add_energy] Energy.
+Exhaust.",
+"name": "Seeing Red"
+},
+"values": {
+"add_energy": 2,
+"energy": 1,
+"exhaust": 1
+}
+}
+seeing_red_upgrade={
+"categories": {
+"class": "skill",
+"colour": "red",
+"rarity": "uncommon",
+"target": "player"
+},
+"texts": {
+"desc": "Gain [add_energy] Energy.
+Exhaust.",
+"name": "Seeing Red+"
+},
+"values": {
+"add_energy": 2,
+"energy": 0,
+"exhaust": 1
 }
 }

@@ -7,6 +7,7 @@ const MAX_ENERGY: int = 3
 var _hand: CardHand = CardHand.new()
 var _draw_pile: CardPile = CardPile.new()
 var _discard_pile: CardPile = CardPile.new()
+var _exhaust_pile: CardPile = CardPile.new()
 var _library_pile: CardPile = CardPile.new()
 var _energy: int = MAX_ENERGY
 
@@ -14,6 +15,7 @@ onready var _hand_cont = $HandZone/HandContainer
 onready var _end_turn = $ActionBar/EndTurnBtn
 onready var _draw_count = $DeckZone/VBox/DrawCount
 onready var _discard_count = $DiscardZone/VBox/DiscardCount
+onready var _exhaust_count = $ExhaustZone/VBox/ExhaustCount
 onready var _hand_delay = $StartingHandDelay
 onready var _drop_area = $DropArea
 onready var _cards_visual = $HandZone/HandContainer/DropArea/Cards
@@ -27,8 +29,12 @@ onready var _lib_cont = $LibNode2D/LibraryBG/LibraryScroll/LibraryContainer
 onready var _dead = $DeadNode2D
 
 var _player_stats = {"hp": 70, "block": 0}
-var _e1_stats = {"hp": 22, "block": 0, "intent": {"damage": 6, "block": 0} }
-var _e2_stats = {"hp": 10, "block": 6, "intent": {"damage": 4, "block": 6} }
+var _e1_intents = [ {"damage": 6, "block": 0, "weak": 0, "vuln": 0},
+					{"damage": 0, "block": 6, "weak": 0, "vuln": 0} ]
+var _e2_intents = [ {"damage": 4, "block": 6, "weak": 0, "vuln": 0},
+					{"damage": 0, "block": 0, "weak": 1, "vuln": 1} ]
+var _e1_stats = {"hp": 22, "block": 0, "intents": _e1_intents}
+var _e2_stats = {"hp": 10, "block": 6, "intents": _e2_intents }
 
 onready var _player = $Player
 onready var _enemy1 = $Enemy1
@@ -43,6 +49,8 @@ func _ready() -> void:
 	_draw_pile.connect("changed", self, "_on_DrawPile_changed")
 	# warning-ignore:return_value_discarded
 	_discard_pile.connect("changed", self, "_on_DiscardPile_changed")
+	# warning-ignore:return_value_discarded
+	_exhaust_pile.connect("changed", self, "_on_ExhaustPile_changed")
 	# warning-ignore:return_value_discarded
 	_hand.connect("changed", self, "_on_Hand_changed")
 	
@@ -108,6 +116,9 @@ func _on_DrawPile_changed() -> void:
 func _on_DiscardPile_changed() -> void:
 	_discard_count.text = "%d" % _discard_pile.count()
 
+func _on_ExhaustPile_changed() -> void:
+	_exhaust_count.text = "%d" % _exhaust_pile.count()
+
 func _on_Hand_changed() -> void:
 	# originally was code to disable draw button here if max hand size, but have removed draw button
 	pass
@@ -152,6 +163,10 @@ func _on_EndTurnBtn_pressed() -> void:
 	# disable end button until logic is done, to avoid being able to spam it to skip enemy turns
 	_end_turn.disabled = true
 	
+	# tick down player debuffs
+	if _player._weak > 0: _player._weak -= 1
+	if _player._vuln > 0: _player._vuln -= 1
+	
 	# discard
 	_hand.move_cards(_discard_pile)
 	
@@ -161,17 +176,27 @@ func _on_EndTurnBtn_pressed() -> void:
 	if _enemy1._hp > 0:
 		_enemy1.attack(_player)
 		yield(get_tree().create_timer(1.5), "timeout")
+		# tick down debuffs
 		if _enemy1._weak > 0: _enemy1._weak -= 1
 		if _enemy1._vuln > 0: _enemy1._vuln -= 1
-		_enemy1.update_display()
+		# swap intents and update display
+		if _enemy1._intent_index == 0:
+			_enemy1.set_intent(1)
+		else:
+			_enemy1.set_intent(0)
 	
 	if _enemy2._hp > 0:
 		_enemy2.attack(_player)
 		yield(get_tree().create_timer(1.5), "timeout")
+		# tick down debuffs
 		if _enemy2._weak > 0: _enemy2._weak -= 1
 		if _enemy2._vuln > 0: _enemy2._vuln -= 1
-		_enemy2.update_display()
-		
+		# swap intents and update display
+		if _enemy2._intent_index == 0:
+			_enemy2.set_intent(1)
+		else:
+			_enemy2.set_intent(0)
+	
 	# draw up to starting hand size, unless dead
 	if _player._hp > 0:
 		_hand_delay.start(0.1)
@@ -190,19 +215,31 @@ func _on_EndTurnBtn_pressed() -> void:
 
 func _play_card(card: CardInstance, target: Enemy=null) -> void:
 	var card_energy = card.data().get_value("energy") if card.data().has_value("energy") else 0
+	var card_exhaust = card.data().get_value("exhaust") if card.data().has_value("exhaust") else 0
 	var card_target = card.data().get_category("target") if card.data().has_meta_category("target") else ""
 	var card_damage = card.data().get_value("damage") if card.data().has_value("damage") else 0
 	var card_block = card.data().get_value("block") if card.data().has_value("block") else 0
 	var card_weak = card.data().get_value("weak") if card.data().has_value("weak") else 0
 	var card_vuln = card.data().get_value("vulnerable") if card.data().has_value("vulnerable") else 0
+	var card_add_energy = card.data().get_value("add_energy") if card.data().has_value("add_energy") else 0
 	
 	if _energy >= card_energy:
-		_hand.play_card(card.ref(), _discard_pile)
-
+		# check if card has Exhaust, if not, Discard when playing, as normal
+		if card_exhaust == 1:
+			print("DEBUG: played card with exhaust")
+			_hand.play_card(card.ref(), _exhaust_pile)
+		else:
+			_hand.play_card(card.ref(), _discard_pile)
+		
+		# failsafe for stacking energy reductions
 		if card_energy < 0:
 			_energy = 0
 		else:
 			_energy -= card_energy
+		
+		# reduce damage if player is weak
+		if _player._weak > 0:
+			card_damage = (card_damage * 0.75)
 		
 		# TODO: better handling of "all" enemies for dynamic scenes with non-fixed no of enemies
 		if card_target == "all_enemy":
@@ -217,6 +254,11 @@ func _play_card(card: CardInstance, target: Enemy=null) -> void:
 		
 		if card_block:
 			_player._block += card_block
+		
+		# other misc card abilities
+		if card_add_energy > 0:
+			print("DEBUG: played card with add_energy " + str(card_add_energy))
+			_energy += card_add_energy
 		
 		_update_stats()
 
@@ -251,6 +293,11 @@ func _on_ViewDeckBtn_pressed():
 
 func _on_ViewDiscardBtn_pressed():
 	_discard_pile.copy_cards(_library_pile)
+	_library.visible = true
+	_lib_scroll.grab_focus()
+
+func _on_ViewExhaustBtn_pressed():
+	_exhaust_pile.copy_cards(_library_pile)
 	_library.visible = true
 	_lib_scroll.grab_focus()
 
@@ -292,3 +339,4 @@ func _show_dead():
 	_dead.visible = true
 	yield(get_tree().create_timer(2), "timeout")
 	emit_signal("next_screen", "menu")
+

@@ -80,7 +80,6 @@ custom_fonts/font = SubResource( 5 )
 text = "Card Name"
 align = 1
 valign = 1
-clip_text = true
 
 [node name="DescBackground" type="Sprite" parent="AnimContainer/Front" index="2"]
 position = Vector2( 0, 150 )

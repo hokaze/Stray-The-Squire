@@ -32,6 +32,8 @@ func _update_data(data: CardData, default: CardData = null) -> void:
 			desc_text = desc_text.replace("[vulnerable]", "%d" % data.get_value("vulnerable"))
 		if data.has_value("weak"):
 			desc_text = desc_text.replace("[weak]", "%d" % data.get_value("weak"))
+		if data.has_value("add_energy"):
+			desc_text = desc_text.replace("[add_energy]", "%d" % data.get_value("add_energy"))
 		_desc.text = desc_text
 
 	if data.has_value("energy"):
