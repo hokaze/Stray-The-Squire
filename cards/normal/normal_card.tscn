@@ -248,3 +248,4 @@ margin_bottom = 300.0
 [connection signal="instance_changed" from="." to="." method="_on_NormalCard_instance_changed"]
 [connection signal="focus_entered" from="Button" to="." method="_on_Button_focus_entered"]
 [connection signal="focus_exited" from="Button" to="." method="_on_Button_focus_exited"]
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]

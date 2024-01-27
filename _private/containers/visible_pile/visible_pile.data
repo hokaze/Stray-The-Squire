@@ -7,7 +7,7 @@ face_up=true
 
 [grid]
 
-card_width=150.0
+card_width=250.0
 fixed_width=true
 card_spacing=Vector2( 0.05, 1 )
 halign="center"
@@ -17,7 +17,7 @@ expand=true
 
 [inter]
 
-interactive=true
+interactive=false
 exclusive=false
 last_only=true
 enabled=true

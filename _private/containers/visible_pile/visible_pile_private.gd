@@ -11,7 +11,7 @@ func _init() -> void:
 	_face_up = true
 
 	# Grid parameters
-	_grid_card_width = 150
+	_grid_card_width = 250
 	_grid_fixed_width = true
 	_grid_card_spacing = Vector2(0.05, 1)
 	_grid_halign = HALIGN_CENTER
@@ -20,7 +20,7 @@ func _init() -> void:
 	_grid_expand = true
 
 	# Interaction parameters
-	_interactive = true
+	_interactive = false
 	_exclusive = false
 	_last_only = true
 	_drag_enabled = true

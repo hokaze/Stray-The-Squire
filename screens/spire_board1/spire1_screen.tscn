@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://screens/spire_board1/spire1_screen.gd" type="Script" id=1]
 [ext_resource path="res://widgets/small_button/small_button.tscn" type="PackedScene" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://containers/card_list/card_list.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/cardengine/core/drop_area.gd" type="Script" id=7]
 [ext_resource path="res://combat/enemy.tscn" type="PackedScene" id=8]
+[ext_resource path="res://containers/visible_pile/visible_pile.tscn" type="PackedScene" id=9]
+[ext_resource path="res://addons/cardengine/container/board.gd" type="Script" id=10]
 
 [sub_resource type="Gradient" id=4]
 colors = PoolColorArray( 0.196078, 0.27451, 0.572549, 1, 0, 0.724915, 0.867188, 1 )
@@ -42,7 +44,12 @@ margin_right = 1280.0
 margin_bottom = 720.0
 texture = SubResource( 5 )
 
-[node name="ExhaustZone" type="ColorRect" parent="."]
+[node name="Board" type="Control" parent="."]
+margin_right = 1280.0
+margin_bottom = 720.0
+script = ExtResource( 10 )
+
+[node name="ExhaustZone" type="ColorRect" parent="Board"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -53,7 +60,7 @@ margin_right = 590.0
 margin_bottom = -200.0
 color = Color( 0.380392, 0.380392, 0.380392, 1 )
 
-[node name="Title" type="Label" parent="ExhaustZone"]
+[node name="Title" type="Label" parent="Board/ExhaustZone"]
 margin_top = -40.0
 margin_right = 80.0
 size_flags_vertical = 3
@@ -67,11 +74,11 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="VBox" type="VBoxContainer" parent="ExhaustZone"]
+[node name="VBox" type="VBoxContainer" parent="Board/ExhaustZone"]
 margin_right = 80.0
 margin_bottom = 60.0
 
-[node name="ExhaustCount" type="Label" parent="ExhaustZone/VBox"]
+[node name="ExhaustCount" type="Label" parent="Board/ExhaustZone/VBox"]
 margin_right = 80.0
 margin_bottom = 35.0
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
@@ -85,15 +92,15 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="ViewExhaustBtn" type="Button" parent="ExhaustZone/VBox"]
+[node name="ViewExhaustBtn" type="Button" parent="Board/ExhaustZone/VBox"]
 margin_top = 39.0
 margin_right = 80.0
 margin_bottom = 59.0
 focus_neighbour_left = NodePath("../../../ActionBar/EndTurnBtn")
-focus_neighbour_top = NodePath("../../../MenuBtn")
+focus_neighbour_top = NodePath("../../../../MenuBtn")
 text = "View"
 
-[node name="DiscardZone" type="ColorRect" parent="."]
+[node name="DiscardZone" type="ColorRect" parent="Board"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -104,7 +111,7 @@ margin_right = 440.0
 margin_bottom = -200.0
 color = Color( 0.917647, 0.521569, 0.521569, 1 )
 
-[node name="Title" type="Label" parent="DiscardZone"]
+[node name="Title" type="Label" parent="Board/DiscardZone"]
 margin_top = -40.0
 margin_right = 80.0
 size_flags_vertical = 3
@@ -118,11 +125,11 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="VBox" type="VBoxContainer" parent="DiscardZone"]
+[node name="VBox" type="VBoxContainer" parent="Board/DiscardZone"]
 margin_right = 80.0
 margin_bottom = 60.0
 
-[node name="DiscardCount" type="Label" parent="DiscardZone/VBox"]
+[node name="DiscardCount" type="Label" parent="Board/DiscardZone/VBox"]
 margin_right = 80.0
 margin_bottom = 35.0
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
@@ -136,15 +143,15 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="ViewDiscardBtn" type="Button" parent="DiscardZone/VBox"]
+[node name="ViewDiscardBtn" type="Button" parent="Board/DiscardZone/VBox"]
 margin_top = 39.0
 margin_right = 80.0
 margin_bottom = 59.0
 focus_neighbour_left = NodePath("../../../ActionBar/EndTurnBtn")
-focus_neighbour_top = NodePath("../../../MenuBtn")
+focus_neighbour_top = NodePath("../../../../MenuBtn")
 text = "View"
 
-[node name="DeckZone" type="ColorRect" parent="."]
+[node name="DeckZone" type="ColorRect" parent="Board"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -155,7 +162,7 @@ margin_right = -440.0
 margin_bottom = -200.0
 color = Color( 0.607843, 0.917647, 0.521569, 1 )
 
-[node name="Title" type="Label" parent="DeckZone"]
+[node name="Title" type="Label" parent="Board/DeckZone"]
 margin_top = -40.0
 margin_right = 80.0
 size_flags_vertical = 3
@@ -169,11 +176,11 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="VBox" type="VBoxContainer" parent="DeckZone"]
+[node name="VBox" type="VBoxContainer" parent="Board/DeckZone"]
 margin_right = 80.0
 margin_bottom = 60.0
 
-[node name="DrawCount" type="Label" parent="DeckZone/VBox"]
+[node name="DrawCount" type="Label" parent="Board/DeckZone/VBox"]
 margin_right = 80.0
 margin_bottom = 35.0
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.498039 )
@@ -187,14 +194,14 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="ViewDeckBtn" type="Button" parent="DeckZone/VBox"]
+[node name="ViewDeckBtn" type="Button" parent="Board/DeckZone/VBox"]
 margin_top = 39.0
 margin_right = 80.0
 margin_bottom = 59.0
 focus_neighbour_right = NodePath("../../../ActionBar/EndTurnBtn")
 text = "View"
 
-[node name="ActionBar" type="HBoxContainer" parent="."]
+[node name="ActionBar" type="HBoxContainer" parent="Board"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -206,7 +213,7 @@ margin_bottom = -175.0
 custom_constants/separation = 20
 alignment = 1
 
-[node name="Title" type="Label" parent="ActionBar"]
+[node name="Title" type="Label" parent="Board/ActionBar"]
 margin_left = 224.0
 margin_right = 343.0
 margin_bottom = 55.0
@@ -222,7 +229,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="Amount" type="Label" parent="ActionBar"]
+[node name="Amount" type="Label" parent="Board/ActionBar"]
 margin_left = 363.0
 margin_right = 380.0
 margin_bottom = 55.0
@@ -238,7 +245,7 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="EndTurnBtn" parent="ActionBar" instance=ExtResource( 2 )]
+[node name="EndTurnBtn" parent="Board/ActionBar" instance=ExtResource( 2 )]
 margin_left = 400.0
 margin_right = 575.0
 rect_min_size = Vector2( 175, 55 )
@@ -249,26 +256,26 @@ __meta__ = {
 }
 button_text = "END TURN"
 
-[node name="Player" parent="." instance=ExtResource( 5 )]
+[node name="Player" parent="Board" instance=ExtResource( 5 )]
 position = Vector2( 50, 90 )
 scale = Vector2( 0.5, 0.5 )
 
-[node name="DropArea" type="Control" parent="."]
+[node name="DropArea" type="Control" parent="Board"]
 margin_left = -12.0
 margin_top = -34.0
 margin_right = 1368.0
 margin_bottom = 466.0
 script = ExtResource( 7 )
 
-[node name="Enemy1" parent="." instance=ExtResource( 8 )]
+[node name="Enemy1" parent="Board" instance=ExtResource( 8 )]
 position = Vector2( 750, 90 )
 scale = Vector2( 0.5, 0.5 )
 
-[node name="Enemy2" parent="." instance=ExtResource( 8 )]
+[node name="Enemy2" parent="Board" instance=ExtResource( 8 )]
 position = Vector2( 1020, 90 )
 scale = Vector2( 0.5, 0.5 )
 
-[node name="HandZone" type="ColorRect" parent="."]
+[node name="HandZone" type="ColorRect" parent="Board"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -279,7 +286,7 @@ margin_right = 400.0
 rect_min_size = Vector2( 800, 160 )
 color = Color( 0.239216, 0.286275, 0.439216, 0.470588 )
 
-[node name="HandContainer" parent="HandZone" instance=ExtResource( 3 )]
+[node name="HandContainer" parent="Board/HandZone" instance=ExtResource( 3 )]
 margin_left = 30.0
 margin_top = 20.0
 margin_right = 770.0
@@ -287,7 +294,7 @@ margin_bottom = 220.0
 in_anchor = NodePath("../HandInAnchor")
 out_anchor = NodePath("../HandOutAnchor")
 
-[node name="HandInAnchor" type="Control" parent="HandZone"]
+[node name="HandInAnchor" type="Control" parent="Board/HandZone"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -299,7 +306,7 @@ margin_bottom = 30.0
 rect_rotation = 45.0
 rect_scale = Vector2( 1e-05, 1e-05 )
 
-[node name="HandOutAnchor" type="Control" parent="HandZone"]
+[node name="HandOutAnchor" type="Control" parent="Board/HandZone"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -313,6 +320,23 @@ rect_scale = Vector2( 1e-05, 1e-05 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="VisiblePile" parent="Board" instance=ExtResource( 9 )]
+visible = false
+margin_left = 350.0
+margin_top = 70.0
+margin_right = 620.0
+margin_bottom = 420.0
+
+[node name="CancelCard" parent="Board/VisiblePile" instance=ExtResource( 2 )]
+margin_left = 50.0
+margin_top = 330.0
+margin_right = 225.0
+margin_bottom = 385.0
+rect_min_size = Vector2( 175, 55 )
+focus_neighbour_left = NodePath("../../DeckZone/VBox/ViewDeckBtn")
+focus_neighbour_right = NodePath("../../DiscardZone/VBox/ViewDiscardBtn")
+button_text = "CANCEL"
 
 [node name="MenuBtn" parent="." instance=ExtResource( 2 )]
 anchor_left = 1.0
@@ -413,12 +437,14 @@ wait_time = 0.1
 one_shot = true
 autostart = true
 
-[connection signal="pressed" from="ExhaustZone/VBox/ViewExhaustBtn" to="." method="_on_ViewExhaustBtn_pressed"]
-[connection signal="pressed" from="DiscardZone/VBox/ViewDiscardBtn" to="." method="_on_ViewDiscardBtn_pressed"]
-[connection signal="pressed" from="DeckZone/VBox/ViewDeckBtn" to="." method="_on_ViewDeckBtn_pressed"]
-[connection signal="pressed" from="ActionBar/EndTurnBtn" to="." method="_on_EndTurnBtn_pressed"]
-[connection signal="dropped" from="DropArea" to="." method="_on_DropArea_dropped"]
-[connection signal="mouse_entered" from="HandZone" to="." method="_on_HandZone_mouse_entered"]
+[connection signal="pressed" from="Board/ExhaustZone/VBox/ViewExhaustBtn" to="." method="_on_ViewExhaustBtn_pressed"]
+[connection signal="pressed" from="Board/DiscardZone/VBox/ViewDiscardBtn" to="." method="_on_ViewDiscardBtn_pressed"]
+[connection signal="pressed" from="Board/DeckZone/VBox/ViewDeckBtn" to="." method="_on_ViewDeckBtn_pressed"]
+[connection signal="pressed" from="Board/ActionBar/EndTurnBtn" to="." method="_on_EndTurnBtn_pressed"]
+[connection signal="dropped" from="Board/DropArea" to="." method="_on_DropArea_dropped"]
+[connection signal="mouse_entered" from="Board/HandZone" to="." method="_on_HandZone_mouse_entered"]
+[connection signal="card_dropped" from="Board/VisiblePile" to="." method="_on_VisiblePile_card_dropped"]
+[connection signal="pressed" from="Board/VisiblePile/CancelCard" to="." method="_on_CancelCardBtn_pressed"]
 [connection signal="pressed" from="MenuBtn" to="." method="_on_MenuBtn_pressed"]
 [connection signal="resized" from="LibNode2D/LibraryBG/LibraryScroll" to="." method="_on_LibraryScroll_resized"]
 [connection signal="pressed" from="LibNode2D/LibraryBG/Close" to="." method="_on_Close_pressed"]

@@ -13,6 +13,10 @@ onready var _skill = $AnimContainer/Front/PictureGroup/Skill
 onready var _power = $AnimContainer/Front/PictureGroup/Power
 onready var _card_id = $AnimContainer/Front/CardId
 
+# if playing card from keyboard/controller, disable certain animations and movements that would
+# normally apply with the mouse when losing focus, as in this mode we need to both demonstrate a
+# card is active, but also let the keyboard/controller focus other elements to select target
+var play_card_keyboard = false
 
 func _update_data(data: CardData, default: CardData = null) -> void:
 	_card_id.text = data.id
@@ -90,11 +94,25 @@ func _on_instance_modified() -> void:
 	_update_data(instance().data(), instance().unmodified())
 
 
-# EXPERIMENTAL - keyboard/controller support for selecting cards
+# EXPERIMENTAL / WIP - keyboard/controller support for selecting cards
 func _on_Button_focus_entered():
-	#print("DEBUG NormalCard button focus enter: " + _name.text)
+	print("DEBUG NormalCard button focus enter: " + _name.text)
 	_on_MouseArea_mouse_entered()
 
 func _on_Button_focus_exited():
-	#print("DEBUG NormalCard button focus exit: " + _name.text)
+	print("DEBUG NormalCard button focus exit: " + _name.text)
 	_on_MouseArea_mouse_exited()
+
+func _on_Button_pressed():
+	print("DEBUG NormalCard button pressed: " + _name.text)
+	play_card_keyboard = !play_card_keyboard
+	_on_MouseArea_button_down()
+
+# override mouse exit event if card is being played (clicked) with keyboard so it no longer does the
+# unfocus and idle events, but still plays them if changing focus with keyboard or mouse WITHOUT playing
+# the card
+#func _on_MouseArea_mouse_exited() -> void:
+#	if !play_card_keyboard:
+#		._on_MouseArea_mouse_exited() # godot equivalent of "super"
+#	else:
+#		print("DEBUG NormalCard play card keyboard mouse exit")

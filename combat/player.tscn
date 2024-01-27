@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://combat/hp_bar_back.png" type="Texture" id=1]
 [ext_resource path="res://combat/player_placeholder.png" type="Texture" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://combat/debuff_vulnerable.png" type="Texture" id=10]
 [ext_resource path="res://combat/animations/Blocked.tres" type="Animation" id=11]
 [ext_resource path="res://combat/animations/Damaged.tres" type="Animation" id=12]
+[ext_resource path="res://combat/target_focus.png" type="Texture" id=13]
 
 [sub_resource type="DynamicFont" id=4]
 size = 80
@@ -35,6 +36,12 @@ font_data = ExtResource( 4 )
 
 [node name="Player" type="Node2D"]
 script = ExtResource( 6 )
+
+[node name="FocusBtn" type="TextureButton" parent="."]
+margin_top = -5.0
+margin_right = 440.0
+margin_bottom = 615.0
+texture_focused = ExtResource( 13 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Blocked = ExtResource( 11 )
