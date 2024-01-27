@@ -28,7 +28,7 @@ func load_scene(current_screen, next_screen) -> void:
 			var progress = float(loader.get_stage())/loader.get_stage_count() * 100
 			loading_bar.value = progress
 			loading_amount.text = str(progress)
-			#yield(get_tree().create_timer(0.01),"timeout") # artifical wait time to test loading bar actually progresses
+			yield(get_tree().create_timer(0.01),"timeout") # artifical wait time to test loading bar actually progresses
 		# end of file, means we're done loading
 		elif error == ERR_FILE_EOF:
 			# load scene instance, add to root and remove the loading screen

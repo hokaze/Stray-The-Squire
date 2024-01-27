@@ -101,6 +101,7 @@ func _ready() -> void:
 	_visible_pile.data_id = "play_pile"
 	_visible_pile.get_drop_area().set_source_filter(["hand"])
 	_visible_pile.set_store(_play_pile)
+	_visible_pile.get_drop_area().set_enabled(false)
 	
 	# connect the player/enemy FocusBtn to a method to allowing playing card with keyboard
 	_player_focus.connect("pressed", self, "_on_FocusBtn_pressed", ["player", null])
@@ -139,6 +140,7 @@ func _on_Hand_changed() -> void:
 	# EXPERIMENTAL, button workaround to focus/play cards with keyboard/controller
 	#print("DEBUG: _on_Hand_changed()")
 	var _cards = _hand_cont.get_node("DropArea/Cards")
+	var i = 0
 	for _card in _cards.get_children():
 		#print("DEBUG: _on_Hand_changed(), card: " + str(_card) + " " + str(_card.instance().data().get_text("name")) )
 		var _button = _card.get_node("Button")
@@ -146,6 +148,11 @@ func _on_Hand_changed() -> void:
 		if !(_button.is_connected('pressed', self, '_on_CardBtn_pressed')):
 			#print("DEBUG: _on_Hand_changed(), connecting on " + str(_card))
 			_button.connect('pressed', self, '_on_CardBtn_pressed', [_card.instance()]) 
+		
+		# also, try to set focus neighbour of end button so 1st card in hand is always the below option
+		if i == 0:
+			_end_turn.set_focus_neighbour(MARGIN_BOTTOM, _button.get_path())
+		i += 1
 	
 
 func _on_StartingHandDelay_timeout() -> void:
@@ -405,9 +412,13 @@ func _focus_neighbours():
 func _hide_visible_pile():
 	_visible_pile.visible = false
 	_focus_neighbours()
+	# can actually still drag and drop with mouse onto pile when not visible, causes problems, so disable
+	# (can't just put it behind the DropArea to block it, as then the Cancel button then can't be clicked)
+	_visible_pile.get_drop_area().set_enabled(false)
 	_end_turn.grab_focus() # loses focus, so need to grab end turn to still have keyboard controls
 
 func _show_visible_pile():
 	_visible_pile.visible = true
 	_focus_neighbours()
+	_visible_pile.get_drop_area().set_enabled(false)
 	_player_focus.grab_focus() # focus on player, as we guarnatee which enemies are still present
