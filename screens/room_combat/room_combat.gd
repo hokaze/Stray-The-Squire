@@ -1,4 +1,4 @@
-extends AbstractScreen
+extends Node
 
 const STARTING_HAND_SIZE: int = 5
 const MAX_HAND_SIZE: int = 10
@@ -20,6 +20,7 @@ onready var _exhaust_count = $Board/ExhaustZone/VBox/ExhaustCount
 onready var _hand_delay = $StartingHandDelay
 onready var _drop_area = $Board/DropArea
 onready var _visible_pile = $Board/VisiblePile
+onready var _cancel_button = $Board/VisiblePile/CancelCard
 onready var _cards_visual = $Board/HandZone/HandContainer/DropArea/Cards
 onready var _energy_label = $Board/ActionBar/Amount
 
@@ -37,7 +38,6 @@ var _e2_intents = [ {"damage": 4, "block": 6, "weak": 0, "vuln": 0},
 					{"damage": 0, "block": 0, "weak": 1, "vuln": 1} ]
 var _e1_stats = {"hp": 22, "block": 0, "intents": _e1_intents}
 var _e2_stats = {"hp": 10, "block": 6, "intents": _e2_intents }
-var _play_card_keyboard = false
 
 onready var _player = $Board/Player
 onready var _player_focus = $Board/Player/FocusBtn
@@ -69,9 +69,9 @@ func _ready() -> void:
 	_enemy2.init(_e2_stats)
 	_enemy2_drop.connect("dropped", self, "_on_EnemyDrop_dropped", [_enemy2])
 	
-	_drop_area.set_source_filter(["hand"])
-	_enemy1_drop.set_source_filter(["hand"])
-	_enemy2_drop.set_source_filter(["hand"])
+	#_drop_area.set_source_filter(["hand"])
+	#_enemy1_drop.set_source_filter(["hand"])
+	#_enemy2_drop.set_source_filter(["hand"])
 	
 	# TODO: instead of using all cards by default, should use an actual test deck for demo?
 	if Gameplay.current_deck == null:
@@ -93,12 +93,9 @@ func _ready() -> void:
 	q_player_drop.from(["target:player", "target:all_enemy"])
 	_drop_area.set_filter(q_player_drop)
 	
-	# TODO: need some way of targeting drop areas with keyboard/controller
-	# make sure FocusBtn of each Player/Enemy are focus neighbors for easy selection
-	_player_focus.set_focus_neighbour(MARGIN_RIGHT, _enemy1_focus.get_path())
-	_enemy1_focus.set_focus_neighbour(MARGIN_LEFT, _player_focus.get_path())
-	_enemy1_focus.set_focus_neighbour(MARGIN_RIGHT, _enemy2_focus.get_path())
-	_enemy2_focus.set_focus_neighbour(MARGIN_LEFT, _enemy1_focus.get_path())
+	# ensures we can navigate Player -> Enemy1 -> Enemy2 if no active card in VisiblePile
+	# or Player -> Cancel -> Enemy1 -> Enemy2 otherwise
+	_focus_neighbours()
 	
 	# EXPERIMENTAL - VisiblePile Container temporary holding zone for playing cards with keyboard
 	_visible_pile.data_id = "play_pile"
@@ -109,8 +106,7 @@ func _ready() -> void:
 	_player_focus.connect("pressed", self, "_on_FocusBtn_pressed", ["player", null])
 	_enemy1_focus.connect("pressed", self, "_on_FocusBtn_pressed", ["enemy", _enemy1])
 	_enemy2_focus.connect("pressed", self, "_on_FocusBtn_pressed", ["enemy", _enemy2])
-	#_enemy1_focus.connect("pressed", self, "_on_EnemyFocusBtn_pressed")
-	#_enemy2_focus.connect("pressed", self, "_on_EnemyFocusBtn_pressed")
+
 
 func _update_stats() -> void:
 	_energy_label.text = str(_energy)
@@ -124,7 +120,7 @@ func _update_stats() -> void:
 
 
 func _on_MenuBtn_pressed() -> void:
-	emit_signal("next_screen", "menu")
+	loading_screen.load_scene(self, "res://screens/menu/menu_screen.tscn")
 
 func _on_DrawPile_changed() -> void:
 	_draw_count.text = "%d" % _draw_pile.count()
@@ -136,18 +132,20 @@ func _on_ExhaustPile_changed() -> void:
 	_exhaust_count.text = "%d" % _exhaust_pile.count()
 
 func _on_Hand_changed() -> void:
+	# yield, as if we don't have a small delay, get_children somehow doesn't include the most recently
+	# added card and thus never connects (both drawing hand and having VisiblePile return cards to hand)
+	yield(get_tree().create_timer(0.01), "timeout")
+	
 	# EXPERIMENTAL, button workaround to focus/play cards with keyboard/controller
+	#print("DEBUG: _on_Hand_changed()")
 	var _cards = _hand_cont.get_node("DropArea/Cards")
-	for i in range(_cards.get_child_count()):
-		var _card = _cards.get_child(i)
+	for _card in _cards.get_children():
+		#print("DEBUG: _on_Hand_changed(), card: " + str(_card) + " " + str(_card.instance().data().get_text("name")) )
 		var _button = _card.get_node("Button")
-		#print("DEBUG: _on_Hand_changed _card: " + str(_card.get_name()))
 		# only connect if not already connected
 		if !(_button.is_connected('pressed', self, '_on_CardBtn_pressed')):
+			#print("DEBUG: _on_Hand_changed(), connecting on " + str(_card))
 			_button.connect('pressed', self, '_on_CardBtn_pressed', [_card.instance()]) 
-	
-	# originally was code to disable draw button here if max hand size, but have removed draw button
-	pass
 	
 
 func _on_StartingHandDelay_timeout() -> void:
@@ -174,7 +172,7 @@ func _on_StartingHandDelay_timeout() -> void:
 	else:
 		_hand_delay.start(0.5)
 
-
+# Functions from example, reminder mostly for any cards that would draw or shuffle
 #func _on_DrawBtn_pressed() -> void:
 #	var card = _draw_pile.draw()
 #	if card == null:
@@ -193,11 +191,14 @@ func _on_EndTurnBtn_pressed() -> void:
 	if _player._weak > 0: _player._weak -= 1
 	if _player._vuln > 0: _player._vuln -= 1
 	
+	# dismiss keyboard play pile to avoid it lingering, and ensure card is returned to hand then discarded
+	_on_CancelCardBtn_pressed()
+	
 	# discard
 	_hand.move_cards(_discard_pile)
 	
 	# TODO: enemy turn, to split off into own method/class later
-	# just doing an example with the 2 demo enemies with static intent
+	# just doing an example with the 2 demo enemies with basic intents
 	# clear their block, attack, re-apply block, tick down buffs/debuffs
 	if _enemy1._hp > 0:
 		_enemy1.attack(_player)
@@ -252,18 +253,16 @@ func _play_card(card: CardInstance, target: Enemy=null, source: String="hand") -
 	var card_pile
 	if source == "hand": card_pile = _hand
 	else: card_pile = _play_pile
+	print("DEBUG: _play_card - source is " + source)
 	
 	if _energy >= card_energy:
 		# check if card has Exhaust, if not, Discard when playing, as normal
 		if card_exhaust == 1:
-			print("DEBUG: played card with exhaust")
-			#_hand.play_card(card.ref(), _exhaust_pile)
+			print("DEBUG: _play_card - played card with exhaust")
 			card_pile.move_card(card.ref(), _exhaust_pile)
 		else:
-			#_hand.play_card(card.ref(), _discard_pile)
 			card_pile.move_card(card.ref(), _discard_pile)
-		_visible_pile.visible = false
-		_play_card_keyboard = false
+		_hide_visible_pile()
 		
 		# failsafe for stacking energy reductions
 		if card_energy < 0:
@@ -296,17 +295,13 @@ func _play_card(card: CardInstance, target: Enemy=null, source: String="hand") -
 		
 		_update_stats()
 
-func _on_DropArea_dropped(card: CardInstance, _source: String, _on_card: CardInstance) -> void:
+func _on_DropArea_dropped(card: CardInstance, source: String, _on_card: CardInstance) -> void:
 	#print("DEBUG: drop area player/all dropped!")
-	_play_card(card)
+	_play_card(card, null, source)
 
-func _on_EnemyDrop_dropped(card: CardInstance, _source: String, _on_card: CardInstance, target: Enemy=null) -> void:
+func _on_EnemyDrop_dropped(card: CardInstance, source: String, _on_card: CardInstance, target: Enemy=null) -> void:
 	#print("DEBUG: card played on enemy drop area: " + str(target))
-	_play_card(card, target)
-
-#func _on_Enemy2Drop_dropped(card: CardInstance, _source: String, _on_card: CardInstance) -> void:
-#	#print("DEBUG: card played on enemy_2 drop area")
-#	_play_card(card, _enemy2)
+	_play_card(card, target, source)
 
 # view deck/discard/exhaust piles with a scrollable grid view
 func _on_LibraryScroll_resized() -> void:
@@ -339,23 +334,9 @@ func _on_ViewExhaustBtn_pressed():
 func _on_CardBtn_pressed(card: CardInstance) -> void:
 	print ("DEBUG: " + str(card))
 	if card != null:
-		var card_name = card.data().get_text("name") if card.data().has_text("name") else ''
-		print("DEBUG press: card " + str(card) + " " + card_name)
-		
-		# actually play the card
-		# TODO: will need further focus selections when we have multiple zones
-		# (e.g. self + multiple enemies instead of a single universal zone)
-		#_on_DropArea_dropped(card, "hand", null)
-		
-		# need a time delay and to switch focus to something else then back otherwise while
-		# it looks like we don't have the new card 0 focused, even though we actually do!
-		#var focused = _hand_cont.get_focus_owner()
-		#end_turn.grab_focus()
-		#focused.grab_focus()
-		
+		var _card_name = card.data().get_text("name") if card.data().has_text("name") else ''
+		print("DEBUG press: card " + str(card) + " " + _card_name)			
 		_on_VisiblePile_card_dropped(card, "hand", null)
-		_player_focus.grab_focus()
-		
 	else:
 		print("DEBUG press: card is null")
 
@@ -365,41 +346,27 @@ func _on_CardBtn_pressed(card: CardInstance) -> void:
 func _on_VisiblePile_card_dropped(card, _source, _on_card):
 	# warning-ignore:return_value_discarded
 	_hand.move_card(card.ref(), _play_pile)
-	_play_card_keyboard = true
-	_visible_pile.visible = true
+	_show_visible_pile()
 
 func _on_FocusBtn_pressed(type: String, target: Enemy=null):
 	print("DEBUG: _on_FocusBtn_pressed")
 	var card = _play_pile.get_first()
-	if _play_card_keyboard == true:
+	if _visible_pile.visible == true:
 		if (type == "player"):
 			print("DEBUG: playing card on player (if valid)")
-			_play_card(card, null, "play_pile")
-			#_on_DropArea_dropped(card, "hand", null)
+			_drop_area.force_drop(card, "play_pile")
 		elif (type == "enemy"):
 			print("DEBUG: playing card on enemy (if valid): " + str(target))
-			_play_card(card, target, "play_pile")
-			#_on_EnemyDrop_dropped(card, "hand", null)
-
-#func _on_PlayerFocusBtn_pressed():
-#	print("STUB ENTRY: _on_PlayerFocusBtn_pressed")
-#	var card = _play_pile.get_first()
-#	if _play_card_keyboard == true:
-#		print("TODO: play card on player if valid")
-#		_play_card(card)
-#
-#func _on_EnemyFocusBtn_pressed():
-#	print("STUB ENTRY: _on_EnemyFocusBtn_pressed")
-#	if _play_card_keyboard == true:
-#		print("TODO: play card on enemy if valid")
-#	pass
+			var target_drop = target.get_node("Drop")
+			target_drop.force_drop(card, "play_pile")
 
 func _on_CancelCardBtn_pressed():
 	var card = _play_pile.get_first()
-	# warning-ignore:return_value_discarded
-	_play_pile.move_card(card.ref(), _hand)
-	_play_card_keyboard = false
-	_visible_pile.visible = false
+	# only move card back to hand if a card is present - otherwise we crash on end turn
+	if card != null:
+		# warning-ignore:return_value_discarded
+		_play_pile.move_card(card.ref(), _hand)
+	_hide_visible_pile()
 
 # workaround for bug with keyboard focusing then trying to focus a different card by mouse
 # the bug meant you couldn't select a different card by mouse until you'd hover'd over the focus'd
@@ -408,7 +375,6 @@ func _on_HandZone_mouse_entered():
 	for i in range(_cards_visual.get_child_count()):
 		var visual = _cards_visual.get_child(i)
 		if visual._is_focused:
-			#visual._on_MouseArea_mouse_exited()
 			_end_turn.grab_focus()
 
 # quick placeholder splash screen for player death + auto reset to main menu after a few moments
@@ -418,3 +384,30 @@ func _show_dead():
 	yield(get_tree().create_timer(2), "timeout")
 	emit_signal("next_screen", "menu")
 
+# helper function for setting up the focus neighbours, as they change depending on if the VisiblePile
+# is visible (i.e. playing cards with keyboard) or not
+func _focus_neighbours():
+	# playing card with keyboard mode, so player -> cancel -> enemy1
+	if _visible_pile.visible:
+		_player_focus.set_focus_neighbour(MARGIN_RIGHT, _cancel_button.get_path())
+		_cancel_button.set_focus_neighbour(MARGIN_LEFT, _player_focus.get_path())
+		_cancel_button.set_focus_neighbour(MARGIN_RIGHT, _enemy1_focus.get_path())
+		_enemy1_focus.set_focus_neighbour(MARGIN_LEFT, _cancel_button.get_path())
+	# keyboard navigation without active card, cancel button + visible pile are hidden so can't be focused
+	else:
+		_player_focus.set_focus_neighbour(MARGIN_RIGHT, _enemy1_focus.get_path())
+		_enemy1_focus.set_focus_neighbour(MARGIN_LEFT, _player_focus.get_path())
+	# enemy1 and 2 are the same either way - TODO drop the ability to focus when an enemy dies?
+	_enemy1_focus.set_focus_neighbour(MARGIN_RIGHT, _enemy2_focus.get_path())
+	_enemy2_focus.set_focus_neighbour(MARGIN_LEFT, _enemy1_focus.get_path())
+
+# helper functions for showing/hiding VisiblePile, whether from Cancel, End Turn or Playing the card
+func _hide_visible_pile():
+	_visible_pile.visible = false
+	_focus_neighbours()
+	_end_turn.grab_focus() # loses focus, so need to grab end turn to still have keyboard controls
+
+func _show_visible_pile():
+	_visible_pile.visible = true
+	_focus_neighbours()
+	_player_focus.grab_focus() # focus on player, as we guarnatee which enemies are still present

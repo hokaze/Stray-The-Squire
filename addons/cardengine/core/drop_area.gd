@@ -52,3 +52,15 @@ func drop_data(_position: Vector2, data) -> void:
 			_manager.get_drop_on())
 
 		_manager.stop_drag()
+
+
+# mimic drag and drop from keyboard/controller
+func force_drop(card: CardInstance, source: String) -> void:
+	#print("DEBUG: force_drop()")
+	_manager.start_drag(card, source)
+	# check can_drop_data first, as that's how we check query filters for what cards are allowed
+	if can_drop_data(Vector2(0,0), "card_engine:drag"):
+		#print("DEBUG: force_drop(), CAN drop")
+		drop_data(Vector2(0,0), "card_engine:drag")
+#	else:
+#		print("DEBUG: force_drop(), CANNOT drop")

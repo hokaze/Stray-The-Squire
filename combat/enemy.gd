@@ -52,16 +52,10 @@ func set_intent(index: int) -> void:
 	# via status effects like weak without affecting the enemy intent once the debuff wears off
 	_intent = _intents[index].duplicate()
 	_intent_index = index
-	update_display()
+		
+	_apply_status() # statuses can affect intents
 
 func update_display() -> void:
-	_hp_bar.max_value = _max_hp
-	_hp_bar.value = _hp
-	_max_hp_label.text = str(_max_hp)
-	_hp_label.text = str(_hp)
-	_intent_damage_label.text = str(_intent.damage)
-	_intent_block_label.text = str(_intent.block)
-		
 	if (_block > 0):
 		_block_icon.visible = true
 		_block_label.visible = true
@@ -100,12 +94,10 @@ func update_display() -> void:
 		_weak_icon.visible = true
 		_weak_label.visible = true
 		_intent_damage_label.add_color_override("font_color", Color("ff9999"))
-		_intent.damage = int(_intent.damage * 0.75)
 	else:
 		_weak_icon.visible = false
 		_weak_label.visible = false
 		_intent_damage_label.remove_color_override("font_color")
-		_intent.damage = _intent.damage
 	_weak_label.text = str(_weak)
 	
 	if (_vuln > 0):
@@ -115,28 +107,37 @@ func update_display() -> void:
 		_vuln_icon.visible = false
 		_vuln_label.visible = false
 	_vuln_label.text = str(_vuln)
+	
+	_hp_bar.max_value = _max_hp
+	_hp_bar.value = _hp
+	_max_hp_label.text = str(_max_hp)
+	_hp_label.text = str(_hp)
+	_intent_damage_label.text = str(_intent.damage)
+	_intent_block_label.text = str(_intent.block)
 
 
 func damage(damage: int) -> void:
-	#print("DEBUG: enemy.damage(), dealing " + str(damage) + " before statuses")
+	print("DEBUG: enemy.damage(), dealing " + str(damage) + " BEFORE statuses")
 	
 	# handle vulnerable condition, incoming damage x1.5, rounded
 	if _vuln > 0:
 		damage = int(damage * 1.5)
+	print("DEBUG: enemy.damage(), dealing " + str(damage) + " AFTER statuses")
 	
 	#print("DEBUG: enemy.damage(), dealing " + str(damage) + " after statuses")
 	var post_block_damage = damage
 	if (_block > 0):
 		post_block_damage -= _block
+		if post_block_damage < 0: post_block_damage = 0
 		_block -= damage
-		#print("DEBUG: enemy.damage(), BLOCK DAMAGED")
+		print("DEBUG: enemy.damage(), BLOCK DAMAGED by " + str(damage - post_block_damage))
 	if (_block < 0):
-		#print("DEBUG: enemy.damage(), BLOCK BROKEN")
+		print("DEBUG: enemy.damage(), BLOCK BROKEN")
 		_block = 0
 	
 	# if pierced block or no block, inflict damage + play animation
 	if (post_block_damage > 0):
-		#print("DEBUG: enemy.damage(), HP DAMAGED")
+		print("DEBUG: enemy.damage(), HP DAMAGED by " + str(post_block_damage))
 		_hp -= post_block_damage
 		_animation_damage_label.text = str(post_block_damage)
 		_animation_player.play("Damaged")
@@ -153,11 +154,11 @@ func damage(damage: int) -> void:
 
 
 func play_card(damage: int, weak: int, vuln: int) -> void:
-	# always apply damage BEFORE condition, to avoid vulnerable attack self-proc
+	# always apply damage BEFORE incrementing conditions, to avoid vulnerable attack self-proc
 	damage(damage)
 	_weak += weak
 	_vuln += vuln
-	update_display()
+	_apply_status()
 
 
 func attack(player: Player) -> void:
@@ -172,6 +173,15 @@ func attack(player: Player) -> void:
 	_block = _intent.block
 	
 	# cycle to the next intent
+
+# apply status - currently just used for weak
+# MUST be kept seperate from update_display() as that can be potentially called multiple times per turn
+# and would lead to debuff/buffs applying their intent damage modifiers multiple times!
+func _apply_status() -> void:
+	# if weak, reduce damage of intent
+	if _weak > 0:
+		_intent.damage = int(_intent.damage * 0.75)
+	update_display()
 
 # Called when the node enters the scene tree for the first time.
 #func _ready():

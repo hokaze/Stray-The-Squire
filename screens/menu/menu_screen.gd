@@ -1,4 +1,4 @@
-extends AbstractScreen
+extends Node
 
 onready var _display = $HomeDisplay
 onready var _slay_btn = $ButtonsLayout/SlayBtn
@@ -19,15 +19,13 @@ func _ready():
 	_slay_btn.grab_focus()
 	
 
-func _on_BoardGameBtn_pressed() -> void:
-	emit_signal("next_screen", "board")
-
 func _on_SlayBtn_pressed():
-	emit_signal("next_screen", "spire_board1")
+	#emit_signal("next_screen", "room_combat")
+	loading_screen.load_scene(self, "res://screens/room_combat/room_combat.tscn")
 
 func _on_BuilderBtn_pressed() -> void:
-	emit_signal("next_screen", "builder")
-
+	#emit_signal("next_screen", "builder")
+	loading_screen.load_scene(self, "res://screens/builder/builder_screen.tscn")
 
 func _on_QuitBtn_pressed() -> void:
 	get_tree().quit()

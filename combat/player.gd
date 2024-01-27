@@ -67,29 +67,26 @@ func update_display() -> void:
 
 
 func damage(damage: int) -> void:
-	#print("DEBUG: player.damage(), dealing " + str(damage) + " before statuses")
+	print("DEBUG: player.damage(), dealing " + str(damage) + " BEFORE statuses")
 	
 	# handle vulnerable condition, incoming damage x1.5, rounded
 	if _vuln > 0:
 		damage = int(damage * 1.5)
 	
-	# handle weak condition, outgoing damage x 0.75, rounded
-	if _vuln > 1:
-		damage = int(damage * 0.75)
-	
-	#print("DEBUG: player.damage(), dealing " + str(damage) + " after statuses")
+	print("DEBUG: player.damage(), dealing " + str(damage) + " AFTER statuses")
 	var post_block_damage = damage
 	if (_block > 0):
 		post_block_damage -= _block
+		if post_block_damage < 0: post_block_damage = 0
 		_block -= damage
-		#print("DEBUG: player.damage(), BLOCK DAMAGED")
+		print("DEBUG: player.damage(), BLOCK DAMAGED by " + str(damage - post_block_damage))
 	if (_block < 0):
-		#print("DEBUG: player.damage(), BLOCK BROKEN")
+		print("DEBUG: player.damage(), BLOCK BROKEN")
 		_block = 0
 		
 	# if pierced block or no block, inflict damage + play animation
 	if (post_block_damage > 0):
-		#print("DEBUG: player.damage(), HP DAMAGED")
+		print("DEBUG: player.damage(), HP DAMAGED by " + str(post_block_damage))
 		_hp -= post_block_damage
 		_animation_damage_label.text = str(post_block_damage)
 		_animation_player.play("Damaged")

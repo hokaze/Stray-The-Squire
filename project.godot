@@ -44,11 +44,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/cardengine/effect/modifier.gd"
 }, {
-"base": "Node",
-"class": "AbstractScreen",
-"language": "GDScript",
-"path": "res://screens/abstract_screen.gd"
-}, {
 "base": "Reference",
 "class": "AbstractStore",
 "language": "GDScript",
@@ -332,7 +327,6 @@ _global_script_class_icons={
 "AbstractFormDialog": "",
 "AbstractManager": "",
 "AbstractModifier": "",
-"AbstractScreen": "",
 "AbstractStore": "",
 "AnimPreviewDialog": "",
 "AnimationBlock": "",
@@ -405,6 +399,7 @@ CardEngine="*res://addons/cardengine/core/card_engine_instance.gd"
 Gameplay="*res://gameplay.gd"
 UserStores="*res://user_data/ud_stores.gd"
 SysDeckStores="*res://_private/decks/deck_stores.gd"
+loading_screen="*res://screens/loading.gd"
 
 [debug]
 

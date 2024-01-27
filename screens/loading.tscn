@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://screens/menu/background.png" type="Texture" id=2]
+[ext_resource path="res://combat/hp_bar_back.png" type="Texture" id=3]
+[ext_resource path="res://combat/hp_bar_progress.png" type="Texture" id=4]
+[ext_resource path="res://fonts/TerminusTTF-4.39.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 40
+use_filter = true
+font_data = ExtResource( 5 )
+
+[node name="LoadingScreen" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Background" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="LoadingBar" type="TextureProgress" parent="."]
+margin_left = 800.0
+margin_top = 620.0
+margin_right = 1200.0
+margin_bottom = 670.0
+texture_under = ExtResource( 3 )
+texture_progress = ExtResource( 4 )
+
+[node name="HBox" type="HBoxContainer" parent="LoadingBar"]
+margin_right = 400.0
+margin_bottom = 50.0
+grow_horizontal = 0
+grow_vertical = 0
+alignment = 1
+
+[node name="Amount" type="Label" parent="LoadingBar/HBox"]
+margin_left = 178.0
+margin_top = 4.0
+margin_right = 198.0
+margin_bottom = 45.0
+custom_fonts/font = SubResource( 1 )
+text = "0"
+align = 1
+
+[node name="Percent" type="Label" parent="LoadingBar/HBox"]
+margin_left = 202.0
+margin_top = 4.0
+margin_right = 222.0
+margin_bottom = 45.0
+custom_fonts/font = SubResource( 1 )
+text = "%"
+align = 1
+
+[node name="LoadingLabel" type="Label" parent="."]
+margin_left = 800.0
+margin_top = 570.0
+margin_right = 1200.0
+margin_bottom = 611.0
+custom_fonts/font = SubResource( 1 )
+text = "LOADING"
+align = 1
