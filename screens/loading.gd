@@ -2,7 +2,10 @@ extends Node
 
 onready var loading_scene = preload("res://screens/loading.tscn")
 
-func load_scene(current_screen, next_screen) -> void:
+func _ready():
+	load_scene("res://main.tscn")
+
+func load_scene(next_screen) -> void:
 	# add loading scene to the root then start loading the next screen
 	var loading_inst = loading_scene.instance()
 	get_tree().get_root().call_deferred("add_child", loading_inst)
@@ -12,7 +15,7 @@ func load_scene(current_screen, next_screen) -> void:
 		print("loading.load_scene: loader is null")
 		return
 
-	current_screen.queue_free()
+	#current_screen.queue_free()
 	
 	# brief delay to let loading screen itself load + appear
 	yield(get_tree().create_timer(0.1),"timeout")

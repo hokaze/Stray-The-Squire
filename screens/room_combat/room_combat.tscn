@@ -267,6 +267,23 @@ margin_right = 1368.0
 margin_bottom = 466.0
 script = ExtResource( 7 )
 
+[node name="VisiblePile" parent="Board" instance=ExtResource( 9 )]
+visible = false
+margin_left = 350.0
+margin_top = 70.0
+margin_right = 620.0
+margin_bottom = 420.0
+
+[node name="CancelCard" parent="Board/VisiblePile" instance=ExtResource( 2 )]
+margin_left = 50.0
+margin_top = 330.0
+margin_right = 225.0
+margin_bottom = 385.0
+rect_min_size = Vector2( 175, 55 )
+focus_neighbour_left = NodePath("../../DeckZone/VBox/ViewDeckBtn")
+focus_neighbour_right = NodePath("../../DiscardZone/VBox/ViewDiscardBtn")
+button_text = "CANCEL"
+
 [node name="Enemy1" parent="Board" instance=ExtResource( 8 )]
 position = Vector2( 750, 90 )
 scale = Vector2( 0.5, 0.5 )
@@ -320,23 +337,6 @@ rect_scale = Vector2( 1e-05, 1e-05 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="VisiblePile" parent="Board" instance=ExtResource( 9 )]
-visible = false
-margin_left = 350.0
-margin_top = 70.0
-margin_right = 620.0
-margin_bottom = 420.0
-
-[node name="CancelCard" parent="Board/VisiblePile" instance=ExtResource( 2 )]
-margin_left = 50.0
-margin_top = 330.0
-margin_right = 225.0
-margin_bottom = 385.0
-rect_min_size = Vector2( 175, 55 )
-focus_neighbour_left = NodePath("../../DeckZone/VBox/ViewDeckBtn")
-focus_neighbour_right = NodePath("../../DiscardZone/VBox/ViewDiscardBtn")
-button_text = "CANCEL"
 
 [node name="MenuBtn" parent="." instance=ExtResource( 2 )]
 anchor_left = 1.0
@@ -442,9 +442,9 @@ autostart = true
 [connection signal="pressed" from="Board/DeckZone/VBox/ViewDeckBtn" to="." method="_on_ViewDeckBtn_pressed"]
 [connection signal="pressed" from="Board/ActionBar/EndTurnBtn" to="." method="_on_EndTurnBtn_pressed"]
 [connection signal="dropped" from="Board/DropArea" to="." method="_on_DropArea_dropped"]
-[connection signal="mouse_entered" from="Board/HandZone" to="." method="_on_HandZone_mouse_entered"]
 [connection signal="card_dropped" from="Board/VisiblePile" to="." method="_on_VisiblePile_card_dropped"]
 [connection signal="pressed" from="Board/VisiblePile/CancelCard" to="." method="_on_CancelCardBtn_pressed"]
+[connection signal="mouse_entered" from="Board/HandZone" to="." method="_on_HandZone_mouse_entered"]
 [connection signal="pressed" from="MenuBtn" to="." method="_on_MenuBtn_pressed"]
 [connection signal="resized" from="LibNode2D/LibraryBG/LibraryScroll" to="." method="_on_LibraryScroll_resized"]
 [connection signal="pressed" from="LibNode2D/LibraryBG/Close" to="." method="_on_Close_pressed"]

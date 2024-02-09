@@ -1,4 +1,4 @@
-extends Node
+extends AbstractScreen
 
 const STARTING_HAND_SIZE: int = 5
 const MAX_HAND_SIZE: int = 10
@@ -20,7 +20,7 @@ onready var _exhaust_count = $Board/ExhaustZone/VBox/ExhaustCount
 onready var _hand_delay = $StartingHandDelay
 onready var _drop_area = $Board/DropArea
 onready var _visible_pile = $Board/VisiblePile
-onready var _cancel_button = $Board/VisiblePile/CancelCard
+onready var _visible_pile_cancel_button = $Board/VisiblePile/CancelCard
 onready var _cards_visual = $Board/HandZone/HandContainer/DropArea/Cards
 onready var _energy_label = $Board/ActionBar/Amount
 
@@ -69,10 +69,6 @@ func _ready() -> void:
 	_enemy2.init(_e2_stats)
 	_enemy2_drop.connect("dropped", self, "_on_EnemyDrop_dropped", [_enemy2])
 	
-	#_drop_area.set_source_filter(["hand"])
-	#_enemy1_drop.set_source_filter(["hand"])
-	#_enemy2_drop.set_source_filter(["hand"])
-	
 	# TODO: instead of using all cards by default, should use an actual test deck for demo?
 	if Gameplay.current_deck == null:
 		var db = CardEngine.db().get_database("main")
@@ -87,12 +83,6 @@ func _ready() -> void:
 	# used for library view of deck/discard/exhaust piles
 	_lib_cont.set_store(_library_pile)
 	
-	# main drop area is for cards that target player or all enemies
-	# enemy drops target that specific enemy, but also allow targeting player/all, so no filter
-	var q_player_drop = Query.new()
-	q_player_drop.from(["target:player", "target:all_enemy"])
-	_drop_area.set_filter(q_player_drop)
-	
 	# ensures we can navigate Player -> Enemy1 -> Enemy2 if no active card in VisiblePile
 	# or Player -> Cancel -> Enemy1 -> Enemy2 otherwise
 	_focus_neighbours()
@@ -101,7 +91,7 @@ func _ready() -> void:
 	_visible_pile.data_id = "play_pile"
 	_visible_pile.get_drop_area().set_source_filter(["hand"])
 	_visible_pile.set_store(_play_pile)
-	_visible_pile.get_drop_area().set_enabled(false)
+	_hide_visible_pile()
 	
 	# connect the player/enemy FocusBtn to a method to allowing playing card with keyboard
 	_player_focus.connect("pressed", self, "_on_FocusBtn_pressed", ["player", null])
@@ -121,7 +111,7 @@ func _update_stats() -> void:
 
 
 func _on_MenuBtn_pressed() -> void:
-	loading_screen.load_scene(self, "res://screens/menu/menu_screen.tscn")
+	emit_signal("next_screen", "menu")
 
 func _on_DrawPile_changed() -> void:
 	_draw_count.text = "%d" % _draw_pile.count()
@@ -263,6 +253,12 @@ func _play_card(card: CardInstance, target: Enemy=null, source: String="hand") -
 	print("DEBUG: _play_card - source is " + source)
 	
 	if _energy >= card_energy:
+		# don't play card, don't reduce energy, discard, exhaust, etc if invalid target
+		# just cancel + return to hand, applies to both mouse and keyboard mode
+		if card_target == "enemy" && target == null:
+			_on_CancelCardBtn_pressed()
+			return
+		
 		# check if card has Exhaust, if not, Discard when playing, as normal
 		if card_exhaust == 1:
 			print("DEBUG: _play_card - played card with exhaust")
@@ -396,10 +392,10 @@ func _show_dead():
 func _focus_neighbours():
 	# playing card with keyboard mode, so player -> cancel -> enemy1
 	if _visible_pile.visible:
-		_player_focus.set_focus_neighbour(MARGIN_RIGHT, _cancel_button.get_path())
-		_cancel_button.set_focus_neighbour(MARGIN_LEFT, _player_focus.get_path())
-		_cancel_button.set_focus_neighbour(MARGIN_RIGHT, _enemy1_focus.get_path())
-		_enemy1_focus.set_focus_neighbour(MARGIN_LEFT, _cancel_button.get_path())
+		_player_focus.set_focus_neighbour(MARGIN_RIGHT, _visible_pile_cancel_button.get_path())
+		_visible_pile_cancel_button.set_focus_neighbour(MARGIN_LEFT, _player_focus.get_path())
+		_visible_pile_cancel_button.set_focus_neighbour(MARGIN_RIGHT, _enemy1_focus.get_path())
+		_enemy1_focus.set_focus_neighbour(MARGIN_LEFT, _visible_pile_cancel_button.get_path())
 	# keyboard navigation without active card, cancel button + visible pile are hidden so can't be focused
 	else:
 		_player_focus.set_focus_neighbour(MARGIN_RIGHT, _enemy1_focus.get_path())
@@ -412,13 +408,9 @@ func _focus_neighbours():
 func _hide_visible_pile():
 	_visible_pile.visible = false
 	_focus_neighbours()
-	# can actually still drag and drop with mouse onto pile when not visible, causes problems, so disable
-	# (can't just put it behind the DropArea to block it, as then the Cancel button then can't be clicked)
-	_visible_pile.get_drop_area().set_enabled(false)
 	_end_turn.grab_focus() # loses focus, so need to grab end turn to still have keyboard controls
 
 func _show_visible_pile():
 	_visible_pile.visible = true
 	_focus_neighbours()
-	_visible_pile.get_drop_area().set_enabled(false)
 	_player_focus.grab_focus() # focus on player, as we guarnatee which enemies are still present

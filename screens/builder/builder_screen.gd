@@ -1,4 +1,4 @@
-extends Node
+extends AbstractScreen
 
 var _store: CardDeck = CardDeck.new()
 var _deck: CardDeck = CardDeck.new()
@@ -232,7 +232,8 @@ func _update_use_btn() -> void:
 
 
 func _on_BackBtn_pressed() -> void:
-	loading_screen.load_scene(self, "res://screens/menu/menu_screen.tscn")
+	#loading_screen.load_scene(self, "res://screens/menu/menu_screen.tscn")
+	emit_signal("next_screen", "menu")
 
 
 func _on_Class_item_selected(index: int) -> void:
